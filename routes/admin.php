@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PageSeoController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::post('/sliders/toggle-status', [SliderController::class, 'toggleStatus'])->name('slider.toggleStatus');
     Route::post('/sliders/update-order', [SliderController::class, 'updateOrder'])->name('slider.updateOrder');
 
+    // Programs
     Route::get('/programs', [ProgramController::class, 'index'])->name('program.index');
     Route::post('/programs', [ProgramController::class, 'store'])->name('program.store');
     Route::get('/programs/{id}/edit', [ProgramController::class, 'edit'])->name('program.edit');
@@ -69,6 +71,14 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::delete('/programs/{id}', [ProgramController::class, 'destroy'])->name('program.delete');
     Route::post('/programs/toggle-status', [ProgramController::class, 'toggleStatus'])->name('program.toggleStatus');
     Route::post('/programs/update-order', [ProgramController::class, 'updateOrder'])->name('program.updateOrder');
+
+    Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonial.index');
+    Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonial.store');
+    Route::get('/testimonials/{id}/edit', [TestimonialController::class, 'edit'])->name('testimonial.edit');
+    Route::post('/testimonials/update', [TestimonialController::class, 'update'])->name('testimonial.update');
+    Route::delete('/testimonials/{id}', [TestimonialController::class, 'destroy'])->name('testimonial.delete');
+    Route::post('/testimonials/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonial.toggleStatus');
+    Route::post('/testimonials/update-order', [TestimonialController::class, 'updateOrder'])->name('testimonial.updateOrder');
 
     // Contacts
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
