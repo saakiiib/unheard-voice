@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CompanyDetailsController;
 use App\Http\Controllers\Admin\ContactController;
@@ -20,6 +21,14 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::get('/categories/parents', [CategoryController::class, 'parents'])->name('category.parents');
     Route::get('/categories/list', [CategoryController::class, 'list'])->name('category.list');
     Route::post('/categories/update-order', [CategoryController::class, 'updateOrder'])->name('category.updateOrder');
+
+    Route::get('/blogs', [BlogController::class, 'index'])->name('blog.index');
+    Route::post('/blogs', [BlogController::class, 'store'])->name('blog.store');
+    Route::get('/blogs/{id}/edit', [BlogController::class, 'edit'])->name('blog.edit');
+    Route::post('/blogs/update', [BlogController::class, 'update'])->name('blog.update');
+    Route::delete('/blogs/{id}', [BlogController::class, 'destroy'])->name('blog.delete');
+    Route::post('/blogs/toggle-status', [BlogController::class, 'toggleStatus'])->name('blog.toggleStatus');
+    Route::post('/blogs/update-order', [BlogController::class, 'updateOrder'])->name('blog.updateOrder');
 
     // Contacts
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');

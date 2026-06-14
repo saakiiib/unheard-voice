@@ -35,6 +35,14 @@
                 </li>
 
                 <li class="nav-item">
+    <a href="{{ route('blog.index') }}"
+       class="nav-link {{ Route::is('blog.*') ? 'active' : '' }}">
+        <i class="ri-article-line"></i>
+        <span>Blogs</span>
+    </a>
+</li>
+
+                <li class="nav-item">
                     <a href="{{ route('category.index') }}"
                     class="nav-link {{ Route::is('category.*') ? 'active' : '' }}">
                         <i class="ri-list-check-2"></i>
