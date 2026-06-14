@@ -35,12 +35,20 @@
                 </li>
 
                 <li class="nav-item">
-    <a href="{{ route('blog.index') }}"
-       class="nav-link {{ Route::is('blog.*') ? 'active' : '' }}">
-        <i class="ri-article-line"></i>
-        <span>Blogs</span>
-    </a>
-</li>
+                    <a href="{{ route('blog.index') }}"
+                    class="nav-link {{ Route::is('blog.*') ? 'active' : '' }}">
+                        <i class="ri-article-line"></i>
+                        <span>Blogs</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('event.index') }}"
+                    class="nav-link {{ Route::is('event.*') ? 'active' : '' }}">
+                        <i class="ri-calendar-event-line"></i>
+                        <span>Events</span>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('category.index') }}"

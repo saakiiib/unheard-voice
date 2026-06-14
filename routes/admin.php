@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CompanyDetailsController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PageSeoController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::get('/categories/list', [CategoryController::class, 'list'])->name('category.list');
     Route::post('/categories/update-order', [CategoryController::class, 'updateOrder'])->name('category.updateOrder');
 
+    // Blogs
     Route::get('/blogs', [BlogController::class, 'index'])->name('blog.index');
     Route::post('/blogs', [BlogController::class, 'store'])->name('blog.store');
     Route::get('/blogs/{id}/edit', [BlogController::class, 'edit'])->name('blog.edit');
@@ -29,6 +31,15 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::delete('/blogs/{id}', [BlogController::class, 'destroy'])->name('blog.delete');
     Route::post('/blogs/toggle-status', [BlogController::class, 'toggleStatus'])->name('blog.toggleStatus');
     Route::post('/blogs/update-order', [BlogController::class, 'updateOrder'])->name('blog.updateOrder');
+
+    // Events
+    Route::get('/events', [EventController::class, 'index'])->name('event.index');
+    Route::post('/events', [EventController::class, 'store'])->name('event.store');
+    Route::get('/events/{id}/edit', [EventController::class, 'edit'])->name('event.edit');
+    Route::post('/events/update', [EventController::class, 'update'])->name('event.update');
+    Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('event.delete');
+    Route::post('/events/toggle-status', [EventController::class, 'toggleStatus'])->name('event.toggleStatus');
+    Route::post('/events/update-order', [EventController::class, 'updateOrder'])->name('event.updateOrder');
 
     // Contacts
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
