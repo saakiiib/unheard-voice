@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CompanyDetailsController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PageSeoController;
+use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::post('/events/toggle-status', [EventController::class, 'toggleStatus'])->name('event.toggleStatus');
     Route::post('/events/update-order', [EventController::class, 'updateOrder'])->name('event.updateOrder');
 
+    // Activities
     Route::get('/activities', [ActivityController::class, 'index'])->name('activity.index');
     Route::post('/activities', [ActivityController::class, 'store'])->name('activity.store');
     Route::get('/activities/{id}/edit', [ActivityController::class, 'edit'])->name('activity.edit');
@@ -49,6 +51,15 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::delete('/activities/{id}', [ActivityController::class, 'destroy'])->name('activity.delete');
     Route::post('/activities/toggle-status', [ActivityController::class, 'toggleStatus'])->name('activity.toggleStatus');
     Route::post('/activities/update-order', [ActivityController::class, 'updateOrder'])->name('activity.updateOrder');
+
+    // Sliders
+    Route::get('/sliders', [SliderController::class, 'index'])->name('slider.index');
+    Route::post('/sliders', [SliderController::class, 'store'])->name('slider.store');
+    Route::get('/sliders/{id}/edit', [SliderController::class, 'edit'])->name('slider.edit');
+    Route::post('/sliders/update', [SliderController::class, 'update'])->name('slider.update');
+    Route::delete('/sliders/{id}', [SliderController::class, 'destroy'])->name('slider.delete');
+    Route::post('/sliders/toggle-status', [SliderController::class, 'toggleStatus'])->name('slider.toggleStatus');
+    Route::post('/sliders/update-order', [SliderController::class, 'updateOrder'])->name('slider.updateOrder');
 
     // Contacts
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
