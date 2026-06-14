@@ -51,6 +51,14 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="{{ route('activity.index') }}"
+                    class="nav-link {{ Route::is('activity.*') ? 'active' : '' }}">
+                        <i class="ri-run-line"></i>
+                        <span>Activities</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="{{ route('category.index') }}"
                     class="nav-link {{ Route::is('category.*') ? 'active' : '' }}">
                         <i class="ri-list-check-2"></i>

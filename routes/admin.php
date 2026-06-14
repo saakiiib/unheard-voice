@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CompanyDetailsController;
@@ -40,6 +41,14 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('event.delete');
     Route::post('/events/toggle-status', [EventController::class, 'toggleStatus'])->name('event.toggleStatus');
     Route::post('/events/update-order', [EventController::class, 'updateOrder'])->name('event.updateOrder');
+
+    Route::get('/activities', [ActivityController::class, 'index'])->name('activity.index');
+    Route::post('/activities', [ActivityController::class, 'store'])->name('activity.store');
+    Route::get('/activities/{id}/edit', [ActivityController::class, 'edit'])->name('activity.edit');
+    Route::post('/activities/update', [ActivityController::class, 'update'])->name('activity.update');
+    Route::delete('/activities/{id}', [ActivityController::class, 'destroy'])->name('activity.delete');
+    Route::post('/activities/toggle-status', [ActivityController::class, 'toggleStatus'])->name('activity.toggleStatus');
+    Route::post('/activities/update-order', [ActivityController::class, 'updateOrder'])->name('activity.updateOrder');
 
     // Contacts
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
