@@ -83,6 +83,14 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="{{ route('team.index') }}"
+                    class="nav-link {{ Route::is('team.*') ? 'active' : '' }}">
+                        <i class="ri-team-line"></i>
+                        <span>Our Team</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="{{ route('testimonial.index') }}"
                     class="nav-link {{ Route::is('testimonial.*') ? 'active' : '' }}">
                         <i class="ri-discuss-line"></i>

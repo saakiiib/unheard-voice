@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PageSeoController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -72,6 +73,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::post('/programs/toggle-status', [ProgramController::class, 'toggleStatus'])->name('program.toggleStatus');
     Route::post('/programs/update-order', [ProgramController::class, 'updateOrder'])->name('program.updateOrder');
 
+    // Testimonials
     Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonial.index');
     Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonial.store');
     Route::get('/testimonials/{id}/edit', [TestimonialController::class, 'edit'])->name('testimonial.edit');
@@ -79,6 +81,15 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::delete('/testimonials/{id}', [TestimonialController::class, 'destroy'])->name('testimonial.delete');
     Route::post('/testimonials/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonial.toggleStatus');
     Route::post('/testimonials/update-order', [TestimonialController::class, 'updateOrder'])->name('testimonial.updateOrder');
+
+    // Teams
+    Route::get('/teams', [TeamController::class, 'index'])->name('team.index');
+    Route::post('/teams', [TeamController::class, 'store'])->name('team.store');
+    Route::get('/teams/{id}/edit', [TeamController::class, 'edit'])->name('team.edit');
+    Route::post('/teams/update', [TeamController::class, 'update'])->name('team.update');
+    Route::delete('/teams/{id}', [TeamController::class, 'destroy'])->name('team.delete');
+    Route::post('/teams/toggle-status', [TeamController::class, 'toggleStatus'])->name('team.toggleStatus');
+    Route::post('/teams/update-order', [TeamController::class, 'updateOrder'])->name('team.updateOrder');
 
     // Contacts
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
