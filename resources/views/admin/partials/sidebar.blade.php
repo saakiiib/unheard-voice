@@ -75,6 +75,14 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="{{ route('program.index') }}"
+                    class="nav-link {{ Route::is('program.*') ? 'active' : '' }}">
+                        <i class="ri-book-open-line"></i>
+                        <span>Programs</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link menu-link {{ Route::is('contacts.*') ? 'active' : '' }}"
                         href="{{ route('contacts.index') }}">
                         <i class="ri-contacts-book-line"></i>
