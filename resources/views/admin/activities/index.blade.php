@@ -118,7 +118,6 @@
                                         <th>Image</th>
                                         <th>Title</th>
                                         <th>Category</th>
-                                        <th>Activity Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -200,7 +199,6 @@
                     { data: 'image', name: 'image', orderable: false, searchable: false },
                     { data: 'title', name: 'title' },
                     { data: 'category', name: 'category', orderable: false, searchable: false },
-                    { data: 'activity_date', name: 'activity_date' },
                     { data: 'status', name: 'status', orderable: false, searchable: false },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ]
@@ -354,7 +352,6 @@
                             $('#newBtn').show();
                             clearForm();
                             reloadTable('#activityTable');
-                            reload(1000);
                         }
                     },
                     error: function(xhr) {

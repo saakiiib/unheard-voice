@@ -24,6 +24,7 @@ class Activity extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'activity_date' => 'datetime',
     ];
 
     public function category()

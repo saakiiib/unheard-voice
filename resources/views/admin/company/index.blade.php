@@ -303,7 +303,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-12 d-none">
+                                <div class="col-sm-12">
                                     <div class="form-group">
                                         <label>Footer Content</label>
                                         <textarea name="footer_content" id="footer_content"

@@ -195,7 +195,6 @@
                             $('#newBtn').show();
                             clearForm();
                             reloadTable('#testimonialTable');
-                            reload(1000);
                         }
                     },
                     error: function(xhr) {

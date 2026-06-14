@@ -29,9 +29,6 @@ class ActivityController extends Controller
                         ? '<span class="badge bg-success-subtle text-success">' . $row->category->name . '</span>'
                         : '<span class="text-muted">—</span>';
                 })
-                ->addColumn('activity_date', function ($row) {
-                    return $row->activity_date ? $row->activity_date->format('Y-m-d H:i') : '—';
-                })
                 ->addColumn('status', function ($row) {
                     $checked = $row->is_active ? 'checked' : '';
                     return '
@@ -133,7 +130,7 @@ class ActivityController extends Controller
     public function edit($id)
     {
         $activity = Activity::findOrFail($id);
-        $activity->formatted_date = $activity->activity_date ? $activity->activity_date->format('Y-m-dT' . 'H:i') : '';
+        $activity->formatted_date = $activity->activity_date ? \Carbon\Carbon::parse($activity->activity_date)->format('Y-m-d\TH:i') : '';
         return response()->json(['success' => true, 'data' => $activity]);
     }
 

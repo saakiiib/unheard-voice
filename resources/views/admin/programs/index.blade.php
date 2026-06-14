@@ -208,7 +208,6 @@
                             $('#newBtn').show();
                             clearForm();
                             reloadTable('#programTable');
-                            reload(1000);
                         }
                     },
                     error: function(xhr) {

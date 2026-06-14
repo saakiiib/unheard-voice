@@ -226,7 +226,6 @@
                             $('#newBtn').show();
                             clearForm();
                             reloadTable('#sliderTable');
-                            reload(1000);
                         }
                     },
                     error: function(xhr) {

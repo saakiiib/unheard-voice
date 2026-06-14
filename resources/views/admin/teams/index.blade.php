@@ -221,7 +221,6 @@
                             $('#newBtn').show();
                             clearForm();
                             reloadTable('#teamTable');
-                            reload(1000);
                         }
                     },
                     error: function(xhr) {

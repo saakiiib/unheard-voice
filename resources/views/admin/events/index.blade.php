@@ -354,7 +354,6 @@
                             $('#newBtn').show();
                             clearForm();
                             reloadTable('#eventTable');
-                            reload(1000);
                         }
                     },
                     error: function(xhr) {

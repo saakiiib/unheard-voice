@@ -3,7 +3,6 @@
 
 @php
     $company = App\Models\CompanyDetails::firstOrCreate();
-    $categories = App\Models\Category::where('is_active', true)->whereNull('parent_id')->orderBy('sort_order')->get();
 @endphp
 
 <head>
@@ -42,7 +41,7 @@
                 "streetAddress": "{{ $company->address1 ?? '' }}",
                 "addressLocality": "{{ $company->city ?? '' }}",
                 "postalCode": "{{ $company->postcode ?? '' }}",
-                "addressCountry": "BD"
+                "addressCountry": "UK"
             }
         }
     </script>
@@ -116,7 +115,7 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700;800&display=swap"  rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 

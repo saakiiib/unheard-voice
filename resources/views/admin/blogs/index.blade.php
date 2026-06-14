@@ -374,7 +374,6 @@
                             $('#newBtn').show();
                             clearForm();
                             reloadTable('#blogTable');
-                            reload(1000); // Sortable লিস্টের ডাটা সিনক্রোনাইজড রাখার জন্য গ্লোবাল রিলোড কল
                         }
                     },
                     error: function(xhr) {

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\CompanyDetails;
 use App\Models\Contact;
 use App\Models\PageSeo;
+use App\Models\Slider;
 use App\Models\Tag;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use OpenGraph;
 use SEOMeta;
@@ -20,7 +23,13 @@ class FrontendController extends Controller
     {
         $this->seo();
 
-        return spa('frontend.index');
+        $sliders = Slider::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+
+        $activities = Activity::with('category')->where('is_active', true)->orderBy('sort_order', 'asc')->take(3)->get();
+
+        $testimonials = Testimonial::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+
+        return spa('frontend.index', compact('sliders', 'activities', 'testimonials'));
     }
 
     public function category(Request $request, $slug)
@@ -74,208 +83,6 @@ class FrontendController extends Controller
         return spa('frontend.category', compact('category', 'articles', 'mostReadArticles', 'popularTags'));
     }
 
-    public function video(Request $request)
-    {
-        $articlesQuery = Article::where('is_video', true)
-            ->where('is_active', true)
-            ->where('published_at', '<=', now())
-            ->latest('published_at');
-
-        if ($request->ajax()) {
-            $articles = $articlesQuery->paginate(9);
-
-            $html = '';
-            foreach ($articles as $article) {
-                $html .= view('frontend.article_card', compact('article'))->render();
-            }
-
-            return response()->json([
-                'html'         => $html,
-                'hasMorePages' => $articles->hasMorePages()
-            ]);
-        }
-
-        $articles = $articlesQuery->paginate(9);
-
-        $mostReadArticles = Article::where('is_video', true)
-            ->where('is_active', true)
-            ->where('published_at', '<=', now())
-            ->orderBy('view_count', 'desc')
-            ->take(5)
-            ->get();
-
-        $popularTags = Tag::where('is_active', true)
-            ->withCount('articles')
-            ->orderBy('articles_count', 'desc')
-            ->limit(12)
-            ->get();
-
-        $this->seo(null, 'ভিডিও', null, null, null);
-
-        return spa('frontend.video', compact('articles', 'mostReadArticles', 'popularTags'));
-    }
-
-    private function categoryArticles(string $slug, int $limit)
-    {
-        return Article::where('is_active', true)
-            ->where('is_video', false)
-            ->whereHas('category', fn($q) => $q->where('slug', $slug))
-            ->with('category')
-            ->latest('published_at')
-            ->limit($limit)
-            ->get();
-    }
-
-    public function article($slug)
-    {
-        $article = Article::with(['category', 'tags', 'sources'])
-            ->where('slug', $slug)
-            ->where('is_active', true)
-            ->firstOrFail();
-
-        $article->increment('view_count');
-
-        $isVideo = $article->is_video;
-
-        $mostReadArticles = Article::where('category_id', $article->category_id)
-            ->where('is_video', $isVideo)
-            ->where('is_active', true)
-            ->where('published_at', '<=', now())
-            ->orderBy('view_count', 'desc')
-            ->take(5)
-            ->get();
-
-        $relatedArticles = Article::where('category_id', $article->category_id)
-            ->where('id', '!=', $article->id)
-            ->where('is_video', $isVideo)
-            ->where('is_active', true)
-            ->where('published_at', '<=', now())
-            ->latest('published_at')
-            ->take(3)
-            ->get();
-
-        $popularTags = Tag::where('is_active', true)
-            ->withCount('articles')
-            ->orderBy('articles_count', 'desc')
-            ->limit(12)
-            ->get();
-
-        $this->seo(
-            null,
-            $article->meta_title ?: $article->title,
-            $article->meta_description ?: $article->excerpt,
-            $article->meta_keywords,
-            $article->featured_image
-        );
-
-        return spa('frontend.article', compact('article', 'mostReadArticles', 'relatedArticles', 'popularTags'));
-    }
-
-    public function tag($slug)
-    {
-        $tag = Tag::where('slug', $slug)->where('is_active', true)->firstOrFail();
-
-        $articles = $tag->articles()
-            ->where('is_active', true)
-            ->where('is_video', false)
-            ->where('published_at', '<=', now())
-            ->latest('published_at')
-            ->take(9)
-            ->get();
-
-        $mostReadArticles = Article::where('is_active', true)
-            ->where('is_video', false)
-            ->where('published_at', '<=', now())
-            ->orderBy('view_count', 'desc')
-            ->take(5)
-            ->get();
-
-        $popularTags = Tag::where('is_active', true)
-            ->withCount('articles')
-            ->orderBy('articles_count', 'desc')
-            ->limit(12)
-            ->get();
-
-        $this->seo();
-
-        return spa('frontend.tag', compact('tag', 'articles', 'mostReadArticles', 'popularTags'));
-    }
-
-    public function search(Request $request)
-    {
-        $query = $request->input('q');
-        $date = $request->input('date');
-
-        $articlesQuery = Article::with(['category'])
-            ->where('is_video', false)
-            ->where('is_active', true)
-            ->where('published_at', '<=', now());
-
-        if (!empty(trim($query))) {
-            $articlesQuery->where(function ($q) use ($query) {
-                $q->where('title', 'LIKE', "%{$query}%")
-                    ->orWhere('body', 'LIKE', "%{$query}%")
-                    ->orWhere('author', 'LIKE', "%{$query}%");
-            });
-        }
-
-        if (!empty($date)) {
-            $articlesQuery->whereDate('published_at', $date);
-        }
-
-        $articles = $articlesQuery->latest('published_at')->take(9)->get();
-
-        $mostReadArticles = Article::where('is_active', true)
-            ->where('is_video', false)
-            ->where('published_at', '<=', now())
-            ->orderBy('view_count', 'desc')
-            ->take(5)
-            ->get();
-
-        $popularTags = Tag::where('is_active', true)
-            ->withCount('articles')
-            ->orderBy('articles_count', 'desc')
-            ->limit(12)
-            ->get();
-
-        $seoTitle = !empty($date) ? date('d-m-Y', strtotime($date)) . ' এর খবর' : 'অনুসন্ধান';
-        $this->seo(null, null, $seoTitle . ' এর জন্য প্রকাশিত খবরসমূহ দেখুন।');
-
-        return spa('frontend.search', compact('articles', 'query', 'date', 'mostReadArticles', 'popularTags'));
-    }
-
-    public function epaper()
-    {
-        $this->seo(
-            null,
-            'ই-পেপার — ' . config('app.name'),
-            'আজকের দৈনিক পত্রিকার ডিজিটাল সংস্করণ বা ই-পেপার পড়তে এখানে ভিজিট করুন।',
-            null,
-            null
-        );
-        return spa('frontend.epaper');
-    }
-
-    public function live()
-    {
-        $this->seo(
-            null,
-            'লাইভ — ' . config('app.name'),
-            'সর্বশেষ ঘটনার সরাসরি সম্প্রচার এবং লাইভ আপডেট দেখতে আমাদের সাথেই থাকুন।',
-            null,
-            null
-        );
-
-        return spa('frontend.live');
-    }
-
-    public function archive()
-    {
-        $this->seo(null, null, 'পুরোনো দিনের সব খবর ও আর্কাইভ সংস্করণ দেখতে তারিখ নির্বাচন করুন।');
-
-        return spa('frontend.archive');
-    }
-
     public function about()
     {
         $this->seo('about');
@@ -315,30 +122,11 @@ class FrontendController extends Controller
         ]);
     }
 
-    public function advertise()
-    {
-        $this->seo(null, null, 'আমাদের অনলাইন ও প্রিন্ট সংস্করণে বিজ্ঞাপন দেওয়ার নিয়মাবলী এবং রেট কার্ড সম্পর্কে জানুন।');
-
-        return spa('frontend.advertise');
-    }
-
-    public function career()
-    {
-        $this->seo(null, null, 'আমাদের সাথে কাজ করার সুযোগ এবং চলমান ক্যারিয়ার বিজ্ঞপ্তিগুলো এখানে দেখুন।');
-
-        return spa('frontend.career');
-    }
-
     public function privacy()
     {
         $this->seo(null, null, 'আমাদের গোপনীয়তা নীতি এবং ব্যবহারকারীদের তথ্য সুরক্ষার নিয়মাবলী।');
 
         return spa('frontend.privacy');
-    }
-
-    public function newsletter(Request $r)
-    {
-        return back()->with('success', 'সাবস্ক্রাইব সম্পন্ন হয়েছে।');
     }
 
     private function seo($pageKey = null, $title = null, $description = null, $keywords = null, $image = null)
