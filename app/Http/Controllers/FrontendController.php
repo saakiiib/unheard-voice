@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ContactMail;
 use App\Models\Activity;
 use App\Models\Blog;
 use App\Models\CompanyDetails;
@@ -14,6 +15,7 @@ use App\Models\Slider;
 use App\Models\Team;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use OpenGraph;
 use SEOMeta;
 use Twitter;
@@ -190,21 +192,23 @@ class FrontendController extends Controller
     public function contactStore(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|max:255',
+            'phone'   => ['nullable', 'string', 'max:20', 'regex:/^(?:\+44|0)(?:7\d{9}|1\d{9}|2\d{9}|3\d{9})$/'],
             'subject' => 'nullable|string|max:255',
             'message' => 'required|string',
         ]);
 
-        Contact::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
+        $contact = Contact::create([
+            'name'    => $request->name,
+            'email'   => $request->email,
+            'phone'   => $request->phone,
             'subject' => $request->subject,
             'message' => $request->message,
-            'status' => 'unread',
+            'status'  => 'unread',
         ]);
+
+        Mail::to(config('mail.from.address'))->send(new ContactMail($contact));
 
         return response()->json([
             'success' => true,

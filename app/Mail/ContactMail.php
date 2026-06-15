@@ -6,7 +6,6 @@ use App\Models\Contact;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\CompanyDetails;
 
 class ContactMail extends Mailable
 {
@@ -21,16 +20,14 @@ class ContactMail extends Mailable
 
     public function build()
     {
-        return $this->subject('New Contact')
+        return $this->subject('New Contact: ' . ($this->contact->subject ?? 'Website Enquiry'))
                     ->view('emails.contact')
                     ->with([
-                        'first_name' => $this->contact->first_name,
-                        'last_name'  => $this->contact->last_name,
-                        'email'      => $this->contact->email,
-                        'phone'      => $this->contact->phone,
+                        'name'           => $this->contact->name,
+                        'email'          => $this->contact->email,
+                        'phone'          => $this->contact->phone ?? 'N/A',
                         'subjectText'    => $this->contact->subject ?? 'New query from website',
-                        'contactMessage'    => $this->contact->message,
-                        'mailFooter' => CompanyDetails::select('mail_footer')->first()->mail_footer ?? '',
+                        'contactMessage' => $this->contact->message,
                     ]);
     }
 }

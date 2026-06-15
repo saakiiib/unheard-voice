@@ -98,3 +98,14 @@ if (scrollTopBtn) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 }
+
+window.loadScript = function(src, callback) {
+    if (document.querySelector('script[src="' + src + '"]')) {
+        callback();
+        return;
+    }
+    var s = document.createElement('script');
+    s.src = src;
+    s.onload = callback;
+    document.head.appendChild(s);
+};

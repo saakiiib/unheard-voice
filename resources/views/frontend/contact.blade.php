@@ -212,80 +212,103 @@
 @endsection
 
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <script>
         $(document).ready(function() {
+            window.loadScript('https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js',
+                function() {
 
-            new TomSelect('#contact_subject', {
-                allowEmptyOption: true,
-            });
+                    new TomSelect('#contact_subject', {
+                        allowEmptyOption: true,
+                    });
 
-            var num1 = Math.floor(Math.random() * 10) + 1;
-            var num2 = Math.floor(Math.random() * 10) + 1;
-            var correctAnswer = num1 + num2;
-            $('#captcha_question').text('What is ' + num1 + ' + ' + num2 + '? *');
+                    var num1 = Math.floor(Math.random() * 10) + 1;
+                    var num2 = Math.floor(Math.random() * 10) + 1;
+                    var correctAnswer = num1 + num2;
+                    $('#captcha_question').text('What is ' + num1 + ' + ' + num2 + '? *');
 
-            $('#contactSubmitBtn').on('click', function() {
+                    $('#contactSubmitBtn').on('click', function() {
 
-                $('#contactSuccess').addClass('d-none');
-                $('#contactError').addClass('d-none');
-                $('#captcha_error').addClass('d-none');
+                        $('#contactSuccess').addClass('d-none');
+                        $('#contactError').addClass('d-none');
+                        $('#captcha_error').addClass('d-none');
 
-                var userAnswer = parseInt($('#captcha_answer').val());
-                if (isNaN(userAnswer) || userAnswer !== correctAnswer) {
-                    $('#captcha_error').removeClass('d-none');
-                    return;
-                }
-
-                var name = $('#contact_name').val().trim();
-                var email = $('#contact_email').val().trim();
-                var phone = $('#contact_phone').val().trim();
-                var subject = $('#contact_subject').val();
-                var message = $('#contact_message').val().trim();
-
-                if (!name || !email || !message || !subject) {
-                    $('#contactError').removeClass('d-none').text('Please fill in all required fields.');
-                    return;
-                }
-
-                console.log('name:', name, 'email:', email, 'subject:', subject, 'message:', message);
-
-                $.ajax({
-                    url: '{{ route('contact.store') }}',
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        name,
-                        email,
-                        phone,
-                        subject,
-                        message
-                    },
-                    success: function(res) {
-                        if (res.success) {
-                            $('#contactSuccess').removeClass('d-none');
-                            $('#contact_name, #contact_email, #contact_phone, #contact_message')
-                                .val('');
-                            $('#captcha_answer').val('');
-                            document.getElementById('contact_subject').tomselect.clear();
-                            num1 = Math.floor(Math.random() * 10) + 1;
-                            num2 = Math.floor(Math.random() * 10) + 1;
-                            correctAnswer = num1 + num2;
-                            $('#captcha_question').text('What is ' + num1 + ' + ' + num2 +
-                                '? *');
+                        var userAnswer = parseInt($('#captcha_answer').val());
+                        if (isNaN(userAnswer) || userAnswer !== correctAnswer) {
+                            $('#captcha_error').removeClass('d-none');
+                            return;
                         }
-                    },
-                    error: function(xhr) {
-                        var msg = 'Something went wrong. Please try again.';
-                        if (xhr.status === 422) {
-                            msg = Object.values(xhr.responseJSON.errors)[0][0];
+
+                        var name = $('#contact_name').val().trim();
+                        var email = $('#contact_email').val().trim();
+                        var phone = $('#contact_phone').val().trim();
+                        var subject = $('#contact_subject').val();
+                        var message = $('#contact_message').val().trim();
+
+                        if (!name || !email || !message || !subject) {
+                            $('#contactError').removeClass('d-none').text(
+                                'Please fill in all required fields.');
+                            return;
                         }
-                        $('#contactError').removeClass('d-none').text(msg);
-                    }
+
+                        var $btn = $('#contactSubmitBtn');
+                        $btn.prop('disabled', true).html(
+                            'Sending <i class="bi bi-hourglass-split"></i>');
+
+                        $.ajax({
+                            url: '{{ route('contact.store') }}',
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                name,
+                                email,
+                                phone,
+                                subject,
+                                message
+                            },
+                            success: function(res) {
+                                if (res.success) {
+                                    $('#contactSuccess').removeClass('d-none');
+                                    $('#contact_name, #contact_email, #contact_phone, #contact_message')
+                                        .val('');
+                                    $('#captcha_answer').val('');
+                                    document.getElementById('contact_subject').tomselect
+                                        .clear();
+                                    num1 = Math.floor(Math.random() * 10) + 1;
+                                    num2 = Math.floor(Math.random() * 10) + 1;
+                                    correctAnswer = num1 + num2;
+                                    $('#captcha_question').text('What is ' + num1 + ' + ' +
+                                        num2 + '? *');
+                                }
+                            },
+                            error: function(xhr) {
+                                let msg = 'Something went wrong. Please try again.';
+
+                                if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                                    const errors = xhr.responseJSON.errors;
+
+                                    // show first error properly
+                                    msg = Object.values(errors)[0][0];
+
+                                    // optional: highlight phone error specifically
+                                    if (errors.phone) {
+                                        $('#contact_phone').addClass('is-invalid');
+                                    }
+                                }
+
+                                $('#contactError')
+                                    .removeClass('d-none')
+                                    .text(msg);
+                            },
+                            complete: function() {
+                                $btn.prop('disabled', false).html(
+                                    'Send Message <i class="bi bi-arrow-right"></i>');
+                            }
+                        });
+                    });
+
                 });
-            });
         });
     </script>
 @endsection
