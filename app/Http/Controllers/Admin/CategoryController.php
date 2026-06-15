@@ -21,9 +21,6 @@ class CategoryController extends Controller
             return DataTables::of($categories)
                 ->addIndexColumn()
                 ->addColumn('name', function ($row) {
-                    if ($row->is_active) {
-                        return '<a href="' . route('category.show', $row->slug) . '" target="_blank">' . $row->name . '</a>';
-                    }
                     return $row->name;
                 })
                 ->addColumn('image', function ($row) {

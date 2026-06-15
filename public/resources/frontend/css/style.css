@@ -761,11 +761,12 @@ section {
     aspect-ratio: 16/10
 }
 
-.activity-card .thumb {
+.activity-card .thumb-wrap .thumb {
+    position: absolute;
     inset: 0;
     background-size: cover;
     background-position: center;
-    transition: transform .7s ease
+    transition: transform .7s ease;
 }
 
 .activity-card:hover .thumb {
@@ -1525,4 +1526,8 @@ footer .bottom {
     font-size: .97rem;
     line-height: 1.7;
     color: var(--muted);
+}
+
+.bg-dark-gradient {
+    background: linear-gradient(135deg, var(--dark) 0%, #0F2530 100%);
 }

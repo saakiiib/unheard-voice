@@ -29,7 +29,9 @@ class FrontendController extends Controller
 
         $testimonials = Testimonial::where('is_active', true)->orderBy('sort_order', 'asc')->get();
 
-        return spa('frontend.index', compact('sliders', 'activities', 'testimonials'));
+        $events = Event::with('category')->where('is_active', true)->where('event_date', '>=', now())->orderBy('event_date', 'asc')->take(3)->get();
+
+        return spa('frontend.index', compact('sliders', 'activities', 'testimonials', 'events'));
     }
 
     public function about()

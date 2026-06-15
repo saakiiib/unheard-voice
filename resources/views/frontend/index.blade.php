@@ -215,26 +215,43 @@
                 <div class="row g-4" id="latest-activities">
                     @foreach ($activities as $activity)
                         <div class="col-md-6 col-lg-4">
-                            <a @spa class="activity-card d-block text-decoration-none"
+                            <a class="activity-card d-block text-decoration-none" @spa
                                 href="{{ route('activity.details', $activity->slug) }}">
-                                <div class="thumb" style="background-image: url('{{ asset($activity->image) }}')"></div>
+
+                                <div class="thumb-wrap">
+                                    @if ($activity->category)
+                                        <span class="cat-pill">{{ $activity->category->name }}</span>
+                                    @endif
+
+                                    <div class="thumb"
+                                        style="background-image:url('{{ $activity->image && $activity->image !== 'placeholder.webp'
+                                            ? asset($activity->image)
+                                            : asset('placeholder.webp') }}')">
+                                    </div>
+                                </div>
 
                                 <div class="body">
-                                    <div class="meta">
-                                        @if ($activity->category)
-                                            <span class="cat">{{ $activity->category->name }}</span>
+                                    <div class="meta-row">
+                                        @if ($activity->activity_date)
+                                            <span>
+                                                <i class="bi bi-calendar3"></i>
+                                                {{ \Carbon\Carbon::parse($activity->activity_date)->format('d M Y') }}
+                                            </span>
                                         @endif
 
-                                        @if ($activity->activity_date)
-                                            <span>{{ $activity->activity_date->format('d F Y') }}</span>
+                                        @if ($activity->location)
+                                            <span>
+                                                <i class="bi bi-geo-alt"></i>
+                                                {{ Str::before($activity->location, ',') }}
+                                            </span>
                                         @endif
                                     </div>
 
                                     <h3>{{ $activity->title }}</h3>
 
-                                    <p>{{ Str::limit(strip_tags($activity->body), 120, '...') }}</p>
-
-                                    <span class="more">Read more <i class="bi bi-arrow-right"></i></span>
+                                    <span class="more">
+                                        Read more <i class="bi bi-arrow-right"></i>
+                                    </span>
                                 </div>
                             </a>
                         </div>
@@ -284,6 +301,55 @@
             </div>
         </div>
     </section>
+
+    {{-- Upcoming Events --}}
+    @if ($events && $events->isNotEmpty())
+        <section class="bg-cream">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+                    <div>
+                        <span class="eyebrow">What's On</span>
+                        <h2 class="mb-0">Upcoming Events</h2>
+                    </div>
+                    <a @spa href="{{ route('events') }}" class="btn btn-outline-ink">
+                        View All Events <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="row g-4">
+                    @foreach ($events as $event)
+                        <div class="col-md-6 col-lg-4">
+                            <a @spa class="activity-card d-block text-decoration-none"
+                                href="{{ route('event.details', $event->slug) }}">
+                                <div class="thumb-wrap">
+                                    @if ($event->category)
+                                        <span class="cat-pill">{{ $event->category->name }}</span>
+                                    @endif
+                                    <div class="thumb"
+                                        style="background-image:url('{{ $event->image && $event->image !== 'placeholder.webp' ? asset($event->image) : asset('placeholder.webp') }}')">
+                                    </div>
+                                </div>
+                                <div class="body">
+                                    <div class="meta-row">
+                                        @if ($event->event_date)
+                                            <span><i
+                                                    class="bi bi-calendar3"></i>{{ $event->event_date->format('d M Y') }}</span>
+                                        @endif
+                                        @if ($event->location)
+                                            <span><i
+                                                    class="bi bi-geo-alt"></i>{{ Str::before($event->location, ',') }}</span>
+                                        @endif
+                                    </div>
+                                    <h3>{{ $event->title }}</h3>
+                                    <span class="more">View event <i class="bi bi-arrow-right"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
 
     {{-- Testimonials --}}
     @if ($testimonials && $testimonials->isNotEmpty())
