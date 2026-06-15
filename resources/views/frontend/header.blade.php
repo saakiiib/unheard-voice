@@ -81,6 +81,10 @@
                         href="{{ route('events') }}">Events</a>
                 </li>
                 <li class="nav-item">
+                    <a @spa class="nav-link {{ Route::is('gallery*') ? 'active' : '' }}"
+                        href="{{ route('gallery') }}">Gallery</a>
+                </li>
+                <li class="nav-item">
                     <a @spa class="nav-link {{ Route::is('contact') ? 'active' : '' }}"
                         href="{{ route('contact') }}">Contact</a>
                 </li>

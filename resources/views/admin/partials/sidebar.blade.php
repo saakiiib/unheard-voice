@@ -67,6 +67,14 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="{{ route('gallery.index') }}"
+                    class="nav-link {{ Route::is('gallery.index') ? 'active' : '' }}">
+                        <i class="ri-gallery-line"></i>
+                        <span>Gallery</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="{{ route('category.index') }}"
                     class="nav-link {{ Route::is('category.*') ? 'active' : '' }}">
                         <i class="ri-list-check-2"></i>

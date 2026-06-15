@@ -8,6 +8,7 @@ use App\Models\Blog;
 use App\Models\CompanyDetails;
 use App\Models\Contact;
 use App\Models\Event;
+use App\Models\Gallery;
 use App\Models\PageSeo;
 use App\Models\Slider;
 use App\Models\Team;
@@ -161,6 +162,20 @@ class FrontendController extends Controller
             ->get();
 
         return spa('frontend.event-details', compact('event', 'related'));
+    }
+
+    public function gallery()
+    {
+        $this->seo('gallery');
+
+        $galleries = Gallery::where('is_active', true)
+            ->with(['media' => function ($query) {
+                $query->orderBy('sort_order');
+            }])
+            ->orderBy('sort_order')
+            ->get();
+
+        return spa('frontend.gallery', compact('galleries'));
     }
 
     public function contact()

@@ -16,6 +16,7 @@ class PageSeoController extends Controller
         'activities' => 'Activities',
         'blogs'      => 'Blog',
         'events'     => 'Events',
+        'gallery'     => 'Gallery',
         'contact'    => 'Contact',
         'donate'     => 'Donate',
         'privacy'    => 'Privacy Policy',

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CompanyDetailsController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\PageSeoController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SliderController;
@@ -90,6 +91,21 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::delete('/teams/{id}', [TeamController::class, 'destroy'])->name('team.delete');
     Route::post('/teams/toggle-status', [TeamController::class, 'toggleStatus'])->name('team.toggleStatus');
     Route::post('/teams/update-order', [TeamController::class, 'updateOrder'])->name('team.updateOrder');
+
+    // Galleries
+    Route::get('/galleries', [GalleryController::class, 'index'])->name('gallery.index');
+    Route::post('/galleries', [GalleryController::class, 'store'])->name('gallery.store');
+    Route::get('/galleries/{id}/edit', [GalleryController::class, 'edit'])->name('gallery.edit');
+    Route::post('/galleries/update', [GalleryController::class, 'update'])->name('gallery.update');
+    Route::delete('/galleries/{id}', [GalleryController::class, 'destroy'])->name('gallery.delete');
+    Route::post('/galleries/toggle-status', [GalleryController::class, 'toggleStatus'])->name('gallery.toggleStatus');
+    Route::post('/galleries/update-order', [GalleryController::class, 'updateOrder'])->name('gallery.updateOrder');
+
+    Route::get('/galleries/{id}/media', [GalleryController::class, 'mediaList'])->name('gallery.media.list');
+    Route::post('/galleries/media/bulk', [GalleryController::class, 'mediaBulkStore'])->name('gallery.media.bulk');
+    Route::post('/galleries/media/youtube', [GalleryController::class, 'mediaYoutubeStore'])->name('gallery.media.youtube');
+    Route::delete('/galleries/media/{id}', [GalleryController::class, 'mediaDestroy'])->name('gallery.media.delete');
+    Route::post('/galleries/media/update-order', [GalleryController::class, 'mediaUpdateOrder'])->name('gallery.media.updateOrder');
 
     // Contacts
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');

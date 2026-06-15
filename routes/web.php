@@ -46,6 +46,8 @@ Route::get('/events', [FrontendController::class, 'events'])->name('events');
 
 Route::get('/events/{slug}', [FrontendController::class, 'eventDetails'])->name('event.details');
 
+Route::get('/gallery', [FrontendController::class, 'gallery'])->name('gallery');
+
 Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 
 Route::post('/contact', [FrontendController::class, 'contactStore'])->name('contact.store');
