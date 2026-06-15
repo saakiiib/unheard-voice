@@ -231,7 +231,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-3 d-none">
+                                <div class="col-sm-3">
                                     <div class="form-group">
                                         <label>Company Registration Number</label>
                                         <input type="text"
@@ -311,7 +311,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-12 d-none">
+                                <div class="col-sm-12">
                                     <div class="form-group">
                                         <label>Google Map source code</label>
                                         <textarea name="google_map" id="google_map" class="form-control @error('google_map') is-invalid @enderror"

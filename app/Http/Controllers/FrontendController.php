@@ -163,9 +163,11 @@ class FrontendController extends Controller
 
     public function contact()
     {
-        $this->seo();
+        $this->seo('contact');
 
-        return spa('frontend.contact');
+        $companyDetails = CompanyDetails::firstOrCreate();
+        
+        return spa('frontend.contact', compact('companyDetails'));
     }
 
     public function contactStore(Request $request)
@@ -189,15 +191,36 @@ class FrontendController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে।'
+            'message' => 'Your message has been sent successfully.',
         ]);
+    }
+
+    public function donate()
+    {
+        $this->seo('donate');
+
+        return spa('frontend.donate');
     }
 
     public function privacy()
     {
-        $this->seo(null, null, 'আমাদের গোপনীয়তা নীতি এবং ব্যবহারকারীদের তথ্য সুরক্ষার নিয়মাবলী।');
+        $this->seo('privacy');
 
         return spa('frontend.privacy');
+    }
+
+    public function terms()
+    {
+        $this->seo('terms');
+
+        return spa('frontend.terms');
+    }
+
+    public function faq()
+    {
+        $this->seo('faq');
+        
+        return spa('frontend.faq');
     }
 
     private function seo($pageKey = null, $title = null, $description = null, $keywords = null, $image = null)

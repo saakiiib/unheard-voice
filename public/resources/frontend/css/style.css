@@ -685,10 +685,6 @@ section {
     line-height: 1.5
 }
 
-.contact-card a:hover {
-    color: var(--teal-deep)
-}
-
 .contact-hero-card {
     background: linear-gradient(135deg, var(--ink) 0%, #0F2530 100%);
     color: #fff;
@@ -766,7 +762,6 @@ section {
 }
 
 .activity-card .thumb {
-    position: absolute;
     inset: 0;
     background-size: cover;
     background-position: center;
@@ -1453,4 +1448,81 @@ footer .bottom {
         opacity: 1;
         transform: none
     }
+}
+
+.ts-wrapper .ts-control {
+    min-height: 52px;
+    padding: .75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: #fafafa;
+    font-size: .96rem;
+    display: flex;
+    align-items: center;
+}
+.ts-wrapper.focus .ts-control {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 .2rem rgba(95, 189, 180, .18);
+    background: #fff;
+}
+.ts-dropdown {
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md);
+    font-size: .96rem;
+}
+.ts-dropdown .option {
+    padding: .65rem 1rem;
+}
+.ts-dropdown .option:hover,
+.ts-dropdown .option.active {
+    background: var(--teal-soft);
+    color: var(--teal-deep);
+}
+.ts-dropdown .selected {
+    background: var(--teal);
+    color: #fff;
+}
+
+.accordion-button {
+    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+    background: #fff;
+    box-shadow: none;
+    padding: 1.2rem 1.4rem;
+}
+
+.accordion-button:not(.collapsed) {
+    color: var(--teal-deep);
+    background: var(--teal-soft);
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.accordion-button::after {
+    filter: none;
+}
+
+.accordion-button:not(.collapsed)::after {
+    filter: none;
+}
+
+.accordion-item {
+    border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+    overflow: hidden;
+    background: #fff;
+}
+
+.accordion-body {
+    padding: 1.1rem 1.4rem 1.4rem;
+    font-size: .97rem;
+    line-height: 1.7;
+    color: var(--muted);
 }

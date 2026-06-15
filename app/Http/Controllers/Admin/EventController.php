@@ -133,7 +133,7 @@ class EventController extends Controller
     public function edit($id)
     {
         $event = Event::findOrFail($id);
-        $event->formatted_date = $event->event_date ? $event->event_date->format('Y-m-dT' . 'H:i') : '';
+        $event->formatted_date = $event->event_date ? \Carbon\Carbon::parse($event->event_date)->format('Y-m-d\TH:i') : '';
         return response()->json(['success' => true, 'data' => $event]);
     }
 
