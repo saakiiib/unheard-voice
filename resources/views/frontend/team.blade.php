@@ -10,7 +10,7 @@
                 <span class="sep">/</span><span>Our Team</span>
             </nav>
             <span class="eyebrow light">Our Team</span>
-            <h1>Meet the people behind Unheard Voices.</h1>
+            <h1>Meet the people behind.</h1>
             <p class="lead mt-3">Our trustees and advisors bring together lived experience, professional expertise, and deep
                 community roots. Each member shares a commitment to breaking the silence on mental health.</p>
         </div>

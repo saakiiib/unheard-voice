@@ -85,7 +85,7 @@
                         href="{{ route('contact') }}">Contact</a>
                 </li>
             </ul>
-            <a class="btn btn-teal btn-donate ms-lg-3" href="https://tevini.co.uk" target="_blank"><i class="bi bi-heart-fill"></i>
+            <a @spa class="btn btn-teal btn-donate ms-lg-3" href="{{ route('donate') }}"><i class="bi bi-heart-fill"></i>
                 Donate</a>
         </div>
     </div>

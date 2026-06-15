@@ -16,7 +16,7 @@
     <section>
         <div class="container">
             <div class="row g-4">
-                @forelse($activities as $activity)
+                @foreach($activities as $activity)
                     <div class="col-md-6 col-lg-4">
                         <a class="activity-card d-block text-decoration-none" @spa
                             href="{{ route('activity.details', $activity->slug) }}">
@@ -44,11 +44,7 @@
                             </div>
                         </a>
                     </div>
-                @empty
-                    <div class="col-12">
-                        <p class="text-muted">No activities found.</p>
-                    </div>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </section>

@@ -50,6 +50,8 @@ Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 
 Route::post('/contact', [FrontendController::class, 'contactStore'])->name('contact.store');
 
+Route::get('/donate', [FrontendController::class, 'donate'])->name('donate');
+
 Route::get('/privacy', [FrontendController::class, 'privacy'])->name('privacy');
 
 Route::get('/terms-and-conditions', [FrontendController::class, 'terms'])->name('terms');

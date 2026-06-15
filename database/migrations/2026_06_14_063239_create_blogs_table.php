@@ -28,6 +28,7 @@ return new class extends Migration
             $table->text('meta_description')->nullable();
             $table->string('meta_keywords')->nullable();
             $table->string('meta_image')->nullable();
+            $table->timestamps();
         });
     }
 

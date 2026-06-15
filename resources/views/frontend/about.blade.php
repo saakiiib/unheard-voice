@@ -25,6 +25,9 @@
         <div class="container">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-7">
+                    <span class="eyebrow">Supporting Mental Health & Wellbeing</span>
+                    <h2>For diverse communities with stigma-free support</h2>
+                    <hr class="divider">
                     <p class="lead">At Unheard Voices, we believe no one should suffer in silence. Too often, people from
                         ethnically diverse communities face stigma, cultural barriers, or language challenges that prevent
                         them from getting the help they need.</p>

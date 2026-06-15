@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
-use App\Models\Article;
-use App\Models\Category;
+use App\Models\Blog;
 use App\Models\CompanyDetails;
 use App\Models\Contact;
+use App\Models\Event;
 use App\Models\PageSeo;
 use App\Models\Slider;
-use App\Models\Tag;
 use App\Models\Team;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
@@ -88,55 +87,78 @@ class FrontendController extends Controller
         return spa('frontend.activity-details', compact('activity', 'related'));
     }
 
-    public function category(Request $request, $slug)
+    public function blogs()
     {
-        $category = Category::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $this->seo('blogs');
 
-        $articlesQuery = Article::where('category_id', $category->id)
-            ->where('is_active', true)
-            ->where('is_video', false)
-            ->where('published_at', '<=', now())
-            ->latest('published_at');
-
-        if ($request->ajax()) {
-            $articles = $articlesQuery->paginate(9);
-
-            $html = '';
-            foreach ($articles as $article) {
-                $html .= view('frontend.article_card', compact('article'))->render();
-            }
-
-            return response()->json([
-                'html' => $html,
-                'hasMorePages' => $articles->hasMorePages()
-            ]);
-        }
-
-        $articles = $articlesQuery->paginate(9);
-
-        $mostReadArticles = Article::where('category_id', $category->id)
-            ->where('is_video', false)
-            ->where('is_active', true)
-            ->where('published_at', '<=', now())
-            ->orderBy('view_count', 'desc')
-            ->take(5)
+        $blogs = Blog::where('is_active', true)
+            ->with('category')
+            ->orderBy('sort_order')
             ->get();
 
-        $popularTags = Tag::where('is_active', true)
-            ->withCount('articles')
-            ->orderBy('articles_count', 'desc')
-            ->limit(12)
-            ->get();
+        return spa('frontend.blogs', compact('blogs'));
+    }
+
+    public function blogDetails($slug)
+    {
+        $blog = Blog::where('slug', $slug)
+            ->where('is_active', true)
+            ->with('category')
+            ->firstOrFail();
 
         $this->seo(
             null,
-            $category->meta_title ?: $category->name,
-            $category->meta_description ?: $category->description,
-            $category->meta_keywords,
-            $category->image
+            $blog->meta_title ?: $blog->title,
+            $blog->meta_description,
+            $blog->meta_keywords,
+            $blog->meta_image ?: $blog->image
         );
 
-        return spa('frontend.category', compact('category', 'articles', 'mostReadArticles', 'popularTags'));
+        $related = Blog::where('is_active', true)
+            ->where('id', '!=', $blog->id)
+            ->with('category')
+            ->orderBy('sort_order')
+            ->limit(3)
+            ->get();
+
+        return spa('frontend.blog-details', compact('blog', 'related'));
+    }
+
+    public function events()
+    {
+        $this->seo('events');
+
+        $events = Event::where('is_active', true)
+            ->with('category')
+            ->orderBy('sort_order')
+            ->get();
+
+        return spa('frontend.events', compact('events'));
+    }
+
+    public function eventDetails($slug)
+    {
+        $event = Event::where('slug', $slug)
+            ->where('is_active', true)
+            ->with('category')
+            ->firstOrFail();
+
+        $this->seo(
+            null,
+            $event->meta_title ?: $event->title,
+            $event->meta_description,
+            $event->meta_keywords,
+            $event->meta_image ?: $event->image
+        );
+
+        $related = Event::where('is_active', true)
+            ->where('id', '!=', $event->id)
+            ->with('category')
+            ->orderBy('sort_order')
+            ->limit(3)
+            ->get();
+
+        return spa('frontend.event-details', compact('event', 'related'));
     }
 
     public function contact()
