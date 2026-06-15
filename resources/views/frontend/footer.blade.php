@@ -34,18 +34,18 @@
 
             <div class="col-6 col-lg-2">
                 <h5>Explore</h5>
-                <a href="{{ route('about') }}">About</a><br>
-                <a href="{{ route('team') }}">Our Team</a><br>
-                <a href="{{ route('home') }}#programs">Programs</a><br> 
-                <a href="{{ route('activities') }}">Activities</a>
+                <a @spa href="{{ route('about') }}">About</a><br>
+                <a @spa href="{{ route('team') }}">Our Team</a><br>
+                <a @spa href="{{ route('home') }}#programs">Programs</a><br> 
+                <a @spa href="{{ route('activities') }}">Activities</a>
             </div>
 
             <div class="col-6 col-lg-2">
                 <h5>Get Involved</h5>
-                <a href="{{ route('home') }}#volunteer">Volunteer</a><br>
-                <a href="{{ route('home') }}#donate">Donate</a><br>
-                <a href="{{ route('events') }}">Events</a><br>
-                <a href="{{ route('blogs') }}">Blogs & Stories</a>
+                <a @spa href="{{ route('home') }}#volunteer">Volunteer</a><br>
+                <a @spa href="{{ route('home') }}#donate">Donate</a><br>
+                <a @spa href="{{ route('events') }}">Events</a><br>
+                <a @spa href="{{ route('blogs') }}">Blogs & Stories</a>
             </div>
 
             <div class="col-lg-4">
@@ -80,9 +80,9 @@
             </span>
             <span class="ms-1">Developed by <a href="https://mentosoftware.co.uk/" target="_blank" rel="noopener noreferrer" aria-label="Mento Software">Mento Software</a></span>
             <span>
-                <a href="{{ route('privacy') }}">Privacy</a> · 
-                <a href="{{ route('terms') }}">Terms & Conditions</a> · 
-                <a href="{{ route('faq') }}">FAQs</a>
+                <a @spa href="{{ route('privacy') }}">Privacy</a> · 
+                <a @spa href="{{ route('terms') }}">Terms & Conditions</a> · 
+                <a @spa href="{{ route('faq') }}">FAQs</a>
             </span>
         </div>
     </div>

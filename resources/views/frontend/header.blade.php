@@ -44,7 +44,7 @@
 
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">
+        <a @spa class="navbar-brand" href="{{ route('home') }}">
             @if ($company->company_logo)
                 <img src="{{ asset('uploads/company/' . $company->company_logo) }}"
                     alt="{{ $company->company_name ?? 'Logo' }}">
@@ -59,29 +59,29 @@
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::is('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
+                    <a @spa class="nav-link {{ Route::is('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::is('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a>
+                    <a @spa class="nav-link {{ Route::is('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::is('team') ? 'active' : '' }}" href="{{ route('team') }}">Our
+                    <a @spa class="nav-link {{ Route::is('team') ? 'active' : '' }}" href="{{ route('team') }}">Our
                         Team</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::is('activities*') ? 'active' : '' }}"
+                    <a @spa class="nav-link {{ Route::is('activities*') ? 'active' : '' }}"
                         href="{{ route('activities') }}">Activities</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::is('blogs*') ? 'active' : '' }}"
+                    <a @spa class="nav-link {{ Route::is('blogs*') ? 'active' : '' }}"
                         href="{{ route('blogs') }}">Blogs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::is('events*') ? 'active' : '' }}"
+                    <a @spa class="nav-link {{ Route::is('events*') ? 'active' : '' }}"
                         href="{{ route('events') }}">Events</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::is('contact') ? 'active' : '' }}"
+                    <a @spa class="nav-link {{ Route::is('contact') ? 'active' : '' }}"
                         href="{{ route('contact') }}">Contact</a>
                 </li>
             </ul>

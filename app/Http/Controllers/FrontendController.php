@@ -11,6 +11,7 @@ use App\Models\Contact;
 use App\Models\PageSeo;
 use App\Models\Slider;
 use App\Models\Tag;
+use App\Models\Team;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use OpenGraph;
@@ -30,6 +31,61 @@ class FrontendController extends Controller
         $testimonials = Testimonial::where('is_active', true)->orderBy('sort_order', 'asc')->get();
 
         return spa('frontend.index', compact('sliders', 'activities', 'testimonials'));
+    }
+
+    public function about()
+    {
+        $this->seo('about');
+
+        return spa('frontend.about');
+    }
+
+    public function team()
+    {
+        $this->seo('team');
+
+        $leadership = Team::where('type', 'Leadership')->where('is_active', true)->orderBy('sort_order')->get();
+
+        $advisors   = Team::where('type', 'Advisors')->where('is_active', true)->orderBy('sort_order')->get();
+
+        return spa('frontend.team', compact('leadership', 'advisors'));
+    }
+
+    public function activities()
+    {
+        $this->seo('activities');
+
+        $activities = Activity::where('is_active', true)
+            ->with('category')
+            ->orderBy('sort_order')
+            ->get();
+
+        return spa('frontend.activities', compact('activities'));
+    }
+
+    public function activityDetails($slug)
+    {
+        $activity = Activity::where('slug', $slug)
+            ->where('is_active', true)
+            ->with('category')
+            ->firstOrFail();
+
+        $this->seo(
+            null,
+            $activity->meta_title ?: $activity->title,
+            $activity->meta_description,
+            $activity->meta_keywords,
+            $activity->meta_image ?: $activity->image
+        );
+
+        $related = Activity::where('is_active', true)
+            ->where('id', '!=', $activity->id)
+            ->with('category')
+            ->orderBy('sort_order')
+            ->limit(3)
+            ->get();
+
+        return spa('frontend.activity-details', compact('activity', 'related'));
     }
 
     public function category(Request $request, $slug)
@@ -81,13 +137,6 @@ class FrontendController extends Controller
         );
 
         return spa('frontend.category', compact('category', 'articles', 'mostReadArticles', 'popularTags'));
-    }
-
-    public function about()
-    {
-        $this->seo('about');
-
-        return spa('frontend.about');
     }
 
     public function contact()

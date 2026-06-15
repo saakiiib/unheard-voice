@@ -98,7 +98,7 @@
                     <p class="muted">We create safe spaces where mental health can be spoken about openly, compassionately,
                         and without judgment. Through workshops, peer support, and community connections, we’re building
                         stronger, healthier, and more resilient communities.</p>
-                    <a href="{{ route('about') }}" class="btn btn-outline-ink mt-3">Learn More About Us <i
+                    <a @spa href="{{ route('about') }}" class="btn btn-outline-ink mt-3">Learn More About Us <i
                             class="bi bi-arrow-right ms-1"></i></a>
                 </div>
                 <div class="col-lg-6">
@@ -190,8 +190,8 @@
                     <div class="card-soft d-flex flex-column justify-content-center align-items-start"
                         style="background:var(--dark);color:#fff;border-color:var(--dark)">
                         <h3 style="color:#fff">Ready to explore?</h3>
-                        <p style="color:rgba(255,255,255,.7)">We have a wide range of programs to help you.</p><a
-                            href="{{ route('activities') }}" class="btn btn-teal mt-2">Explore Activities</a>
+                        <p style="color:rgba(255,255,255,.7)">We have a wide range of programs to help you.</p>
+                        <a @spa href="{{ route('activities') }}" class="btn btn-teal mt-2">Explore Activities</a>
                     </div>
                 </div>
             </div>
@@ -207,7 +207,7 @@
                         <span class="eyebrow">Our Activities</span>
                         <h2 class="mb-0">Latest from the Community</h2>
                     </div>
-                    <a href="{{ route('activities') }}" class="btn btn-outline-ink">
+                    <a @spa href="{{ route('activities') }}" class="btn btn-outline-ink">
                         View All Activities <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
@@ -215,7 +215,7 @@
                 <div class="row g-4" id="latest-activities">
                     @foreach ($activities as $activity)
                         <div class="col-md-6 col-lg-4">
-                            <a class="activity-card d-block text-decoration-none"
+                            <a @spa class="activity-card d-block text-decoration-none"
                                 href="{{ route('activity.details', $activity->slug) }}">
                                 <div class="thumb" style="background-image: url('{{ asset($activity->image) }}')"></div>
 
@@ -320,11 +320,7 @@
         </section>
     @endif
 
+    {{-- CTA --}}
     @include('frontend.cta')
 
-@section('content')
-
-@endsection
-
-@section('script')
 @endsection
