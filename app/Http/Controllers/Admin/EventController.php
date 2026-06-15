@@ -30,7 +30,7 @@ class EventController extends Controller
                         : '<span class="text-muted">—</span>';
                 })
                 ->addColumn('event_date', function ($row) {
-                    return $row->event_date ? $row->event_date->format('Y-m-d H:i') : '—';
+                    return $row->event_date ? $row->event_date->format('d-M-Y H:i') : '—';
                 })
                 ->addColumn('status', function ($row) {
                     $checked = $row->is_active ? 'checked' : '';
@@ -114,7 +114,7 @@ class EventController extends Controller
         Event::create([
             'category_id'      => $request->category_id ?: null,
             'title'            => $request->title,
-            'slug'             => Str::slug($request->title) . '-' . time(),
+            'slug'             => $this->generateUniqueSlug($request->title),
             'location'         => $request->location,
             'event_date'       => $request->event_date,
             'body'             => $request->body,
@@ -182,8 +182,10 @@ class EventController extends Controller
         }
 
         $event->category_id      = $request->category_id ?: null;
+        if ($event->title !== $request->title) {
+            $event->slug = $this->generateUniqueSlug($request->title, $event->id);
+        }
         $event->title            = $request->title;
-        $event->slug             = Str::slug($request->title) . '-' . $event->id;
         $event->location         = $request->location;
         $event->event_date       = $request->event_date;
         $event->body             = $request->body;
@@ -193,6 +195,24 @@ class EventController extends Controller
         $event->save();
 
         return response()->json(['success' => true, 'message' => 'Event updated successfully.']);
+    }
+
+    private function generateUniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (
+            Event::when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+                ->where('slug', $slug)
+                ->exists()
+        ) {
+            $slug = $baseSlug . '-' . str_pad($counter, 3, '0', STR_PAD_LEFT);
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public function destroy($id)

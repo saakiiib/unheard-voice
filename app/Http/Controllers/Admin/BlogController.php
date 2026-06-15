@@ -111,7 +111,7 @@ class BlogController extends Controller
         Blog::create([
             'category_id'      => $request->category_id ?: null,
             'title'            => $request->title,
-            'slug'             => Str::slug($request->title) . '-' . time(),
+            'slug'             => $this->generateUniqueSlug($request->title),
             'author_name'      => $request->author_name,
             'read_time'        => $request->read_time,
             'body'             => $request->body,
@@ -178,8 +178,13 @@ class BlogController extends Controller
         }
 
         $blog->category_id      = $request->category_id ?: null;
+        if ($blog->title !== $request->title) {
+            $blog->slug = $this->generateUniqueSlug(
+                $request->title,
+                $blog->id
+            );
+        }
         $blog->title            = $request->title;
-        $blog->slug             = Str::slug($request->title) . '-' . $blog->id;
         $blog->author_name      = $request->author_name;
         $blog->read_time        = $request->read_time;
         $blog->body             = $request->body;
@@ -189,6 +194,24 @@ class BlogController extends Controller
         $blog->save();
 
         return response()->json(['success' => true, 'message' => 'Blog updated successfully.']);
+    }
+
+    private function generateUniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (
+            Blog::when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+                ->where('slug', $slug)
+                ->exists()
+        ) {
+            $slug = $baseSlug . '-' . str_pad($counter, 3, '0', STR_PAD_LEFT);
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public function destroy($id)

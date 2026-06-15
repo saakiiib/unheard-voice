@@ -111,7 +111,7 @@ class ActivityController extends Controller
         Activity::create([
             'category_id'      => $request->category_id ?: null,
             'title'            => $request->title,
-            'slug'             => Str::slug($request->title) . '-' . time(),
+            'slug'             => $this->generateUniqueSlug($request->title),
             'location'         => $request->location,
             'activity_date'    => $request->activity_date,
             'body'             => $request->body,
@@ -179,8 +179,8 @@ class ActivityController extends Controller
         }
 
         $activity->category_id      = $request->category_id ?: null;
+        $activity->slug             = $this->generateUniqueSlug($request->title, $activity->id);
         $activity->title            = $request->title;
-        $activity->slug             = Str::slug($request->title) . '-' . $activity->id;
         $activity->location         = $request->location;
         $activity->activity_date    = $request->activity_date;
         $activity->body             = $request->body;
@@ -190,6 +190,24 @@ class ActivityController extends Controller
         $activity->save();
 
         return response()->json(['success' => true, 'message' => 'Activity updated successfully.']);
+    }
+
+    private function generateUniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (
+            Activity::when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+                ->where('slug', $slug)
+                ->exists()
+        ) {
+            $slug = $baseSlug . '-' . str_pad($counter, 3, '0', STR_PAD_LEFT);
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public function destroy($id)
