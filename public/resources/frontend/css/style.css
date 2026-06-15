@@ -1531,3 +1531,49 @@ footer .bottom {
 .bg-dark-gradient {
     background: linear-gradient(135deg, var(--dark) 0%, #0F2530 100%);
 }
+
+.scroll-top-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all .3s ease;
+    z-index: 1030;
+    border: none;
+    cursor: pointer;
+}
+
+.scroll-top-btn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-top-btn:hover {
+    background: var(--teal-deep);
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(46, 124, 119, .4);
+}
+
+@media (max-width:768px) {
+    .scroll-top-btn {
+        bottom: 18px;
+        right: 18px;
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+    }
+}

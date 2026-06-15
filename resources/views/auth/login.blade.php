@@ -1,32 +1,39 @@
 @extends('frontend.master')
 
-@section('title', 'সাইন ইন')
+@section('title', 'Sign In')
 
 @section('content')
 
-    <section class="pb-cat-hero">
-        <div class="container-pb">
-            <h1 class="my-1">সাইন ইন</h1>
-            <div class="sub">আপনার অ্যাকাউন্ট লগইন করে আমাদের পোর্টালে প্রবেশ করুন</div>
+    <header class="page-hero" style="--page-img:url('{{ asset('resources/frontend/img/banner.webp') }}')">
+        <div class="container">
+            <nav class="crumbs" aria-label="Breadcrumb">
+                <a @spa href="{{ route('home') }}">Home</a><span class="sep">/</span><span>Sign In</span>
+            </nav>
+            <span class="eyebrow light">Welcome back</span>
+            <h1>Sign in</h1>
+            <p class="lead mt-3">Login to your account to access your portal.</p>
         </div>
-    </section>
+    </header>
 
-    <section class="pb-section py-5">
-        <div class="container-pb">
-            <div class="row g-4 justify-content-center">
+    <section>
+        <div class="container">
+            <div class="row g-5 justify-content-center">
 
-                <div class="col-lg-6 col-md-8">
-                    <div class="pb-contact-box">
+                <div class="col-lg-6">
+                    <div class="form-card">
+                        <span class="eyebrow">Account access</span>
+                        <h3 class="mb-3" style="font-family:'Fraunces',serif">Sign in to continue</h3>
+
                         <form method="POST" action="{{ route('login') }}" class="mt-2">
                             @csrf
 
                             <div class="row g-3">
                                 <div class="col-12">
-                                    <label class="pb-form-label">ইমেইল ঠিকানা *</label>
+                                    <label class="form-label">Email address <span class="text-danger">*</span></label>
                                     <input id="email" type="email"
-                                        class="pb-form-input @error('email') is-invalid @enderror" name="email"
+                                        class="form-control @error('email') is-invalid @enderror" name="email"
                                         value="{{ old('email') }}" required autocomplete="email" autofocus
-                                        placeholder="আপনার ইমেইল দিন" />
+                                        placeholder="your@email.com" />
 
                                     @error('email')
                                         <div class="invalid-feedback d-block mt-1">{{ $message }}</div>
@@ -34,19 +41,19 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="pb-form-label">পাসওয়ার্ড *</label>
+                                    <label class="form-label">Password <span class="text-danger">*</span></label>
                                     <input id="password" type="password"
-                                        class="pb-form-input @error('password') is-invalid @enderror" name="password"
-                                        required autocomplete="current-password" placeholder="আপনার পাসওয়ার্ড দিন" />
+                                        class="form-control @error('password') is-invalid @enderror" name="password"
+                                        required autocomplete="current-password" placeholder="Enter your password" />
 
                                     @error('password')
                                         <div class="invalid-feedback d-block mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <div class="col-12 mt-4">
-                                    <button type="submit" class="pb-btn-submit w-100 justify-content-center">
-                                        <i class="bi bi-box-arrow-in-right me-1"></i> সাইন ইন করুন
+                                <div class="col-12 mt-2">
+                                    <button type="submit" class="btn btn-teal btn-lg w-100">
+                                        Sign In <i class="bi bi-box-arrow-in-right ms-1"></i>
                                     </button>
                                 </div>
                             </div>
