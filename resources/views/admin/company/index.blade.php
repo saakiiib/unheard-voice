@@ -407,7 +407,7 @@
                                         <label>Meta Image</label>
                                         <input type="file" class="form-control" name="meta_image" accept="image/*"
                                             onchange="previewImage(event, '#meta_image_preview')">
-                                        <img width="100" class="img-thumbnail mt-2" id="meta_image_preview"
+                                        <img width="300" class="img-thumbnail mt-2" id="meta_image_preview"
                                             src="{{ $data->meta_image ? asset('uploads/company/' . $data->meta_image) : '' }}" alt="">
                                     </div>
                                 </div>

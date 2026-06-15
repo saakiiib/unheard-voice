@@ -82,7 +82,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item d-none">
                     <a href="{{ route('program.index') }}"
                     class="nav-link {{ Route::is('program.*') ? 'active' : '' }}">
                         <i class="ri-book-open-line"></i>

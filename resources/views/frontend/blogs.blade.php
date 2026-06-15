@@ -9,7 +9,7 @@
                 <a @spa href="{{ route('home') }}">Home</a><span class="sep">/</span><span>Blog</span>
             </nav>
             <span class="eyebrow light">Our Blog</span>
-            <h1>Voices, ideas & reflections.</h1>
+            <h1>Voices, ideas reflections.</h1>
             <p class="lead mt-3">Honest writing from our team, volunteers and community on mental health, culture and care
                 &mdash; the things we talk about most often, in our own words.</p>
         </div>

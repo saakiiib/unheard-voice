@@ -11,11 +11,16 @@ use Yajra\DataTables\Facades\DataTables;
 class PageSeoController extends Controller
 {
     private array $pages = [
-        'about'    => 'About Us',
-        'contact'  => 'Contact',
-        'advertise'  => 'Advertise',
-        'career'  => 'Career',
-        'privacy'  => 'Privacy',
+        'about'      => 'About Us',
+        'team'       => 'Our Team',
+        'activities' => 'Activities',
+        'blogs'      => 'Blog',
+        'events'     => 'Events',
+        'contact'    => 'Contact',
+        'donate'     => 'Donate',
+        'privacy'    => 'Privacy Policy',
+        'terms'      => 'Terms & Conditions',
+        'faq'        => 'FAQ',
     ];
 
     public function index(Request $request)

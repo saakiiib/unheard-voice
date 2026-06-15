@@ -1015,7 +1015,8 @@ section {
 .team-card .ph {
     aspect-ratio: 4/5;
     background-size: cover;
-    background-position: center;
+    /* background-position: center; */
+    background-position: top center;
     border-radius: 16px;
     margin-bottom: 1rem;
     box-shadow: var(--shadow-sm)

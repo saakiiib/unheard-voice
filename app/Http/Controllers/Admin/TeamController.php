@@ -81,7 +81,7 @@ class TeamController extends Controller
 
             // Square size aspect ratio for professional avatars
             Image::make($request->file('image'))
-                ->fit(500, 500, function ($c) { $c->upsize(); })
+                // ->fit(500, 500, function ($c) { $c->upsize(); })
                 ->encode('webp', 80)
                 ->save($destPath . $filename);
 
@@ -127,7 +127,7 @@ class TeamController extends Controller
             if (!file_exists($destPath)) mkdir($destPath, 0755, true);
 
             Image::make($request->file('image'))
-                ->fit(500, 500, function ($c) { $c->upsize(); })
+                // ->fit(500, 500, function ($c) { $c->upsize(); })
                 ->encode('webp', 80)
                 ->save($destPath . $filename);
 
