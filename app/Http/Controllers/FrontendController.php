@@ -32,7 +32,9 @@ class FrontendController extends Controller
 
         $testimonials = Testimonial::where('is_active', true)->orderBy('sort_order', 'asc')->get();
 
-        $events = Event::with('category')->where('is_active', true)->where('event_date', '>=', now())->orderBy('event_date', 'asc')->take(3)->get();
+        $activities = Event::with('category')->where('is_active', true)->past()->orderBy('event_date', 'desc')->take(3)->get();
+
+        $events = Event::with('category')->where('is_active', true)->upcoming()->orderBy('event_date', 'asc')->take(3)->get();
 
         return spa('frontend.index', compact('sliders', 'activities', 'testimonials', 'events'));
     }
@@ -59,9 +61,10 @@ class FrontendController extends Controller
     {
         $this->seo('activities');
 
-        $activities = Activity::where('is_active', true)
+        $activities = Event::where('is_active', true)
+            ->past()
             ->with('category')
-            ->orderBy('sort_order')
+            ->orderBy('event_date', 'desc')
             ->get();
 
         return spa('frontend.activities', compact('activities'));
@@ -69,8 +72,9 @@ class FrontendController extends Controller
 
     public function activityDetails($slug)
     {
-        $activity = Activity::where('slug', $slug)
+        $activity = Event::where('slug', $slug)
             ->where('is_active', true)
+            ->past()
             ->with('category')
             ->firstOrFail();
 
@@ -82,10 +86,11 @@ class FrontendController extends Controller
             $activity->meta_image ?: $activity->image
         );
 
-        $related = Activity::where('is_active', true)
+        $related = Event::where('is_active', true)
+            ->past()
             ->where('id', '!=', $activity->id)
             ->with('category')
-            ->orderBy('sort_order')
+            ->orderBy('event_date', 'desc')
             ->limit(3)
             ->get();
 
@@ -134,8 +139,9 @@ class FrontendController extends Controller
         $this->seo('events');
 
         $events = Event::where('is_active', true)
+            ->upcoming()
             ->with('category')
-            ->orderBy('sort_order')
+            ->orderBy('event_date', 'asc')
             ->get();
 
         return spa('frontend.events', compact('events'));
@@ -145,6 +151,7 @@ class FrontendController extends Controller
     {
         $event = Event::where('slug', $slug)
             ->where('is_active', true)
+            ->upcoming()
             ->with('category')
             ->firstOrFail();
 
@@ -157,9 +164,10 @@ class FrontendController extends Controller
         );
 
         $related = Event::where('is_active', true)
+            ->upcoming()
             ->where('id', '!=', $event->id)
             ->with('category')
-            ->orderBy('sort_order')
+            ->orderBy('event_date', 'asc')
             ->limit(3)
             ->get();
 

@@ -65,7 +65,7 @@
                         <h3>Make a donation</h3>
                         <p class="muted small mb-4">Secure, one-off or monthly. Gift Aid available.</p>
 
-                        <div class="row g-2 mb-3">
+                        <div class="row g-2 mb-3 d-none">
                             <div class="col-6">
                                 <button class="btn btn-outline-ink w-100 donate-type-btn" id="btnOneOff"
                                     type="button">One-off</button>

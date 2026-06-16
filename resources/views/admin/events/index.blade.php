@@ -44,7 +44,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Event Date & Time</label>
+                                <label class="form-label">Event Date & Time <span class="text-danger">*</span></label>
                                 <input type="datetime-local" class="form-control" id="event_date">
                             </div>
 

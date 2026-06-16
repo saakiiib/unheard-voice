@@ -58,7 +58,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item d-none">
                     <a href="{{ route('activity.index') }}"
                     class="nav-link {{ Route::is('activity.*') ? 'active' : '' }}">
                         <i class="ri-run-line"></i>

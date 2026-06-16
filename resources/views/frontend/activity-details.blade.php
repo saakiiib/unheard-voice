@@ -29,12 +29,12 @@
                         @if($activity->category)
                             <span class="tag">{{ $activity->category->name }}</span>
                         @endif
-                        @if($activity->activity_date)
+                        @if($activity->event_date)
                             <span class="muted" style="font-size:.92rem">
-                                <i class="bi bi-calendar3 me-1"></i>{{ \Carbon\Carbon::parse($activity->activity_date)->format('d M Y') }}
+                                <i class="bi bi-calendar3 me-1"></i>{{ $activity->event_date->format('d M Y') }}
                             </span>
                             <span class="muted" style="font-size:.92rem">
-                                <i class="bi bi-clock me-1"></i>{{ \Carbon\Carbon::parse($activity->activity_date)->format('h:i A') }}
+                                <i class="bi bi-clock me-1"></i>{{ $activity->event_date->format('h:i A') }}
                             </span>
                         @endif
                     </div>
@@ -47,19 +47,19 @@
                 <div class="col-lg-4">
                     <aside class="detail-aside">
                         <h4>Event details</h4>
-                        @if($activity->activity_date)
+                        @if($activity->event_date)
                         <div class="info-row">
                             <div class="ico"><i class="bi bi-calendar3"></i></div>
                             <div>
                                 <div class="lbl">Date</div>
-                                <div class="val">{{ \Carbon\Carbon::parse($activity->activity_date)->format('d M Y') }}</div>
+                                <div class="val">{{ $activity->event_date->format('d M Y') }}</div>
                             </div>
                         </div>
                         <div class="info-row">
                             <div class="ico"><i class="bi bi-clock"></i></div>
                             <div>
                                 <div class="lbl">Time</div>
-                                <div class="val">{{ \Carbon\Carbon::parse($activity->activity_date)->format('h:i A') }}</div>
+                                <div class="val">{{ $activity->event_date->format('h:i A') }}</div>
                             </div>
                         </div>
                         @endif
@@ -71,9 +71,6 @@
                                 <div class="val">{{ $activity->location }}</div>
                             </div>
                         </div>
-                        @endif
-                        @if($activity->activity_date && \Carbon\Carbon::parse($activity->activity_date)->isFuture())
-                            <a @spa href="{{ route('contact') }}" class="btn btn-teal"><i class="bi bi-bookmark-heart"></i> Register interest</a>
                         @endif
                     </aside>
                 </div>
@@ -103,8 +100,8 @@
                         </div>
                         <div class="body">
                             <div class="meta-row">
-                                @if($item->activity_date)
-                                    <span><i class="bi bi-calendar3"></i>{{ \Carbon\Carbon::parse($item->activity_date)->format('d M Y') }}</span>
+                                @if($item->event_date)
+                                    <span><i class="bi bi-calendar3"></i>{{ $item->event_date->format('d M Y') }}</span>
                                 @endif
                                 @if($item->location)
                                     <span><i class="bi bi-geo-alt"></i>{{ Str::before($item->location, ',') }}</span>

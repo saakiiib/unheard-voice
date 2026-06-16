@@ -31,4 +31,14 @@ class Event extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function scopeUpcoming($query)
+    {
+        return $query->where('event_date', '>=', now());
+    }
+
+    public function scopePast($query)
+    {
+        return $query->where('event_date', '<', now());
+    }
 }
