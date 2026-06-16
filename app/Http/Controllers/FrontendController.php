@@ -256,7 +256,7 @@ class FrontendController extends Controller
 
         $keywords = $keywords ?: ($pageSeo?->meta_keywords ?: $company?->meta_keywords);
 
-        $image = $image ?: ($pageSeo?->meta_image ? asset($pageSeo->meta_image) : ($company?->meta_image ? asset('uploads/company/meta/' . $company->meta_image) : null));
+        $image = $image ?: ($pageSeo?->meta_image ? asset($pageSeo->meta_image) : ($company?->meta_image ? asset('uploads/company/' . $company->meta_image) : null));
 
         if ($title) {
             SEOMeta::setTitle($title);
