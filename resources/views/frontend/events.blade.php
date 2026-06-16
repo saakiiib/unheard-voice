@@ -9,7 +9,7 @@
                 <a @spa href="{{ route('home') }}">Home</a><span class="sep">/</span><span>Events</span>
             </nav>
             <span class="eyebrow light">Events</span>
-            <h1>Events and highlights.</h1>
+            <h1>Upcoming Events</h1>
         </div>
     </header>
 
