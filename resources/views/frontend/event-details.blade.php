@@ -46,7 +46,7 @@
 
                     <div class="prose">
                         @php
-                            $body = preg_replace('/\s(width|height)=["\']?\d+(px)?["\']?/i', '', $activity->body);
+                            $body = preg_replace('/\s(width|height)=["\']?\d+(px)?["\']?/i', '', $event->body);
                             $body = preg_replace('/width\s*:\s*\d+px;?/i', '', $body);
                         @endphp
 
