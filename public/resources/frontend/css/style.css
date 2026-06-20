@@ -1326,6 +1326,25 @@ footer .bottom {
     line-height: 1.75
 }
 
+.prose img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 1.5rem auto;
+    border-radius: 8px;
+}
+
+.prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.prose iframe,
+.prose video {
+    max-width: 100%;
+}
+
 .prose h2 {
     margin-top: 2.5rem;
     font-size: 1.8rem

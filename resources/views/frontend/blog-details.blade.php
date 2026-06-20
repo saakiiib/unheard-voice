@@ -46,7 +46,12 @@
                     </div>
 
                     <div class="prose">
-                        {!! $blog->body !!}
+                        @php
+                            $body = preg_replace('/\s(width|height)=["\']?\d+(px)?["\']?/i', '', $blog->body);
+                            $body = preg_replace('/width\s*:\s*\d+px;?/i', '', $body);
+                        @endphp
+
+                        {!! $body !!}
                     </div>
                 </div>
 
@@ -87,9 +92,9 @@
                                 </div>
                             </div>
                         @endif
-                        <a @spa href="{{ route('contact') }}" class="btn btn-teal"><i class="bi bi-envelope"></i> Get in
+                        <a @spa href="{{ route('contact') }}" class="btn btn-teal d-none"><i class="bi bi-envelope"></i> Get in
                             touch</a>
-                        <a @spa href="{{ route('donate') }}" class="btn btn-outline-ink mt-2"><i class="bi bi-heart"></i>
+                        <a @spa href="{{ route('donate') }}" class="btn btn-outline-ink mt-2 d-none"><i class="bi bi-heart"></i>
                             Support our work</a>
                     </aside>
                 </div>

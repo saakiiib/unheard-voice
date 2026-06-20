@@ -45,7 +45,12 @@
                     </div>
 
                     <div class="prose">
-                        {!! $event->body !!}
+                        @php
+                            $body = preg_replace('/\s(width|height)=["\']?\d+(px)?["\']?/i', '', $activity->body);
+                            $body = preg_replace('/width\s*:\s*\d+px;?/i', '', $body);
+                        @endphp
+
+                        {!! $body !!}
                     </div>
                 </div>
 
@@ -87,9 +92,9 @@
                         </div>
                         @endif
                         @if($event->event_date && $event->event_date->isFuture())
-                            <a @spa href="{{ route('contact') }}" class="btn btn-teal"><i class="bi bi-bookmark-heart"></i> Register interest</a>
+                            <a @spa href="{{ route('contact') }}" class="btn btn-teal d-none"><i class="bi bi-bookmark-heart"></i> Register interest</a>
                         @endif
-                        <a @spa href="{{ route('contact') }}" class="btn btn-outline-ink mt-2"><i class="bi bi-envelope"></i> Get in touch</a>
+                        <a @spa href="{{ route('contact') }}" class="btn btn-outline-ink mt-2 d-none"><i class="bi bi-envelope"></i> Get in touch</a>
                     </aside>
                 </div>
             </div>

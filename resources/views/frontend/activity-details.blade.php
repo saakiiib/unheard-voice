@@ -40,7 +40,12 @@
                     </div>
 
                     <div class="prose">
-                        {!! $activity->body !!}
+                        @php
+                            $body = preg_replace('/\s(width|height)=["\']?\d+(px)?["\']?/i', '', $activity->body);
+                            $body = preg_replace('/width\s*:\s*\d+px;?/i', '', $body);
+                        @endphp
+
+                        {!! $body !!}
                     </div>
                 </div>
 
