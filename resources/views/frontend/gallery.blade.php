@@ -15,6 +15,12 @@
 
     <section class="bg-cream-soft">
         <div class="container">
+            <div class="text-center mb-5">
+                <span class="eyebrow">Our Gallery</span>
+                <h2>Moments Worth Sharing</h2>
+                <hr class="divider mx-auto">
+            </div>
+
             <div class="row mb-5">
                 <div class="col-12 text-center">
                     <div class="gallery-filters d-flex flex-wrap justify-content-center gap-2">
@@ -37,7 +43,7 @@
                         @php $hasMedia = true; @endphp
                         <div class="col-sm-6 col-md-4 col-lg-3 gallery-item" data-album="album-{{ $gallery->id }}">
                             <div class="gallery-card" data-type="{{ $item->type }}"
-                                data-src="{{ $item->type === 'image' ? asset($item->file) : 'https://www.youtube.com/embed/' . $item->youtube_id . '?autoplay=1&rel=0' }}"
+                                data-src="{{ $item->type === 'image' ? asset($item->file) : ($item->type === 'video' ? asset($item->file) : 'https://www.youtube.com/embed/' . $item->youtube_id . '?autoplay=1&rel=0') }}"
                                 data-title="{{ $gallery->title }}">
 
                                 <div class="media-preview-wrap">
@@ -54,6 +60,10 @@
                                     @if ($item->type === 'image')
                                         <div class="gallery-thumb"
                                             style="background-image: url('{{ asset($item->file) }}')"></div>
+                                    @elseif ($item->type === 'video')
+                                        <video class="gallery-thumb" preload="metadata" muted playsinline>
+                                            <source src="{{ asset($item->file) }}#t=0.1">
+                                        </video>
                                     @else
                                         <div class="gallery-thumb"
                                             style="background-image: url('https://img.youtube.com/vi/{{ $item->youtube_id }}/hqdefault.jpg')">
@@ -103,7 +113,6 @@
 @endsection
 
 @section('script')
-
     <script>
         $(document).ready(function() {
 
@@ -126,7 +135,6 @@
             let currentIndex = 0;
 
             $(document).on('click', '.gallery-card', function() {
-
                 let visibleItems = $('.gallery-item:visible');
 
                 cards = visibleItems.map(function() {
@@ -174,9 +182,9 @@
             });
 
             function renderLightbox() {
+                destroyActiveVideo();
 
                 let card = $(cards[currentIndex]);
-
                 let type = card.data('type');
                 let src = card.data('src');
                 let title = card.data('title');
@@ -185,24 +193,54 @@
 
                 if (type === 'image') {
                     html = `<img src="${src}" alt="${title || ''}">`;
+                } else if (type === 'video') {
+                    html = `
+                        <div class="video-embed-container">
+                            <video src="${src}" controls playsinline muted autoplay style="width:100%;height:100%;"></video>
+                        </div>`;
                 } else {
                     html = `
-                <div class="video-embed-container">
-                    <iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                </div>`;
+                        <div class="video-embed-container">
+                            <iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                        </div>`;
                 }
 
                 $('#lightbox-media-box').html(html);
+
+                if (type === 'video') {
+                    let vid = $('#lightbox-media-box video')[0];
+                    if (vid) {
+                        vid.load();
+                        setTimeout(function() {
+                            let playPromise = vid.play();
+                            if (playPromise !== undefined) {
+                                playPromise.catch(function(error) {
+                                    console.log("Autoplay prevented or interrupted:", error);
+                                });
+                            }
+                        }, 50);
+                    }
+                }
+
                 $('#lightbox-title').text(title || '');
                 $('#lightbox-counter').text((currentIndex + 1) + ' / ' + cards.length);
             }
 
-            function closeLightbox() {
-                $('#custom-lightbox').removeClass('show');
+            function destroyActiveVideo() {
+                let existingVid = $('#lightbox-media-box video')[0];
+                if (existingVid) {
+                    existingVid.pause();
+                    existingVid.src = "";
+                    existingVid.load();
+                }
                 $('#lightbox-media-box').html('');
-                $('body').css('overflow', '');
             }
 
+            function closeLightbox() {
+                $('#custom-lightbox').removeClass('show');
+                destroyActiveVideo();
+                $('body').css('overflow', '');
+            }
         });
     </script>
 @endsection

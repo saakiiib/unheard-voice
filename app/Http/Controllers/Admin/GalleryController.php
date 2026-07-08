@@ -16,7 +16,7 @@ class GalleryController extends Controller
         if ($request->ajax()) {
             $galleries = Gallery::select(['id', 'title', 'cover_image', 'sort_order', 'is_active'])
                 ->withCount(['media as photo_count' => fn($q) => $q->where('type', 'image')])
-                ->withCount(['media as video_count' => fn($q) => $q->where('type', 'youtube')])
+                ->withCount(['media as video_count' => fn($q) => $q->whereIn('type', ['youtube', 'video'])])
                 ->orderBy('sort_order');
 
             return DataTables::of($galleries)
@@ -140,7 +140,7 @@ class GalleryController extends Controller
         $gallery = Gallery::with('media')->findOrFail($id);
 
         foreach ($gallery->media as $media) {
-            if ($media->type === 'image' && $media->file && file_exists(public_path($media->file))) {
+            if (in_array($media->type, ['image', 'video']) && $media->file && file_exists(public_path($media->file))) {
                 @unlink(public_path($media->file));
             }
         }
@@ -209,6 +209,28 @@ class GalleryController extends Controller
         return response()->json(['success' => true, 'message' => 'Images uploaded successfully.']);
     }
 
+    public function mediaVideoBulkStore(Request $request)
+    {
+        $request->validate([
+            'gallery_id' => 'required|exists:galleries,id',
+            'videos.*'   => 'mimes:mp4,mov,avi,wmv,webm,mkv|max:51200',
+        ]);
+
+        $maxOrder = GalleryMedia::where('gallery_id', $request->gallery_id)->max('sort_order') ?? 0;
+
+        foreach ($request->file('videos', []) as $file) {
+            $maxOrder++;
+            GalleryMedia::create([
+                'gallery_id' => $request->gallery_id,
+                'type'       => 'video',
+                'file'       => $this->uploadVideo($file),
+                'sort_order' => $maxOrder,
+            ]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Videos uploaded successfully.']);
+    }
+
     public function mediaYoutubeStore(Request $request)
     {
         $request->validate([
@@ -229,7 +251,7 @@ class GalleryController extends Controller
     public function mediaDestroy($id)
     {
         $media = GalleryMedia::findOrFail($id);
-        if ($media->type === 'image' && $media->file && file_exists(public_path($media->file))) {
+        if (in_array($media->type, ['image', 'video']) && $media->file && file_exists(public_path($media->file))) {
             @unlink(public_path($media->file));
         }
         $media->delete();
@@ -258,6 +280,17 @@ class GalleryController extends Controller
             ->save($destPath . $filename);
 
         return '/uploads/galleries/' . $filename;
+    }
+
+    private function uploadVideo($file): string
+    {
+        $filename = mt_rand(10000000, 99999999) . '.' . $file->getClientOriginalExtension();
+        $destPath = public_path('uploads/galleries/videos/');
+        if (!file_exists($destPath)) mkdir($destPath, 0755, true);
+
+        $file->move($destPath, $filename);
+
+        return '/uploads/galleries/videos/' . $filename;
     }
 
     private function generateUniqueSlug(string $title, ?int $ignoreId = null): string

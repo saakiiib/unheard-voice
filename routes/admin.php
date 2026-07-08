@@ -103,6 +103,7 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
 
     Route::get('/galleries/{id}/media', [GalleryController::class, 'mediaList'])->name('gallery.media.list');
     Route::post('/galleries/media/bulk', [GalleryController::class, 'mediaBulkStore'])->name('gallery.media.bulk');
+    Route::post('/galleries/media/video-bulk', [GalleryController::class, 'mediaVideoBulkStore'])->name('gallery.media.videoBulk');
     Route::post('/galleries/media/youtube', [GalleryController::class, 'mediaYoutubeStore'])->name('gallery.media.youtube');
     Route::delete('/galleries/media/{id}', [GalleryController::class, 'mediaDestroy'])->name('gallery.media.delete');
     Route::post('/galleries/media/update-order', [GalleryController::class, 'mediaUpdateOrder'])->name('gallery.media.updateOrder');

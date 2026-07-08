@@ -36,7 +36,14 @@ class FrontendController extends Controller
 
         $events = Event::with('category')->where('is_active', true)->upcoming()->orderBy('event_date', 'asc')->take(3)->get();
 
-        return spa('frontend.index', compact('sliders', 'activities', 'testimonials', 'events'));
+        $galleries = Gallery::where('is_active', true)
+            ->with(['media' => function ($query) {
+                $query->orderBy('sort_order');
+            }])
+            ->orderBy('sort_order')
+            ->get();
+
+        return spa('frontend.index', compact('sliders', 'activities', 'testimonials', 'events', 'galleries'));
     }
 
     public function about()

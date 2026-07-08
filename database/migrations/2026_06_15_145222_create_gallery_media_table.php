@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('gallery_media', function (Blueprint $table) {
             $table->id();
             $table->foreignId('gallery_id')->constrained('galleries')->onDelete('cascade');
-            $table->enum('type', ['image', 'youtube'])->default('image');
+            $table->enum('type', ['image', 'youtube', 'video'])->default('image');
             $table->string('file')->nullable();
             $table->string('youtube_url')->nullable();
             $table->integer('sort_order')->default(0);

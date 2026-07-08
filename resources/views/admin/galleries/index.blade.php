@@ -63,7 +63,7 @@
 
                 <div class="row g-3 mb-4">
                     {{-- Bulk Image Upload --}}
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="border rounded p-3">
                             <h6 class="mb-3"><i class="ri-image-add-line me-1 text-primary"></i> Upload Images</h6>
                             <input type="file" class="form-control mb-2" id="bulkImages" accept="image/*" multiple>
@@ -77,8 +77,23 @@
                         </div>
                     </div>
 
+                    {{-- Bulk Video Upload --}}
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <h6 class="mb-3"><i class="ri-video-add-line me-1 text-success"></i> Upload Videos</h6>
+                            <input type="file" class="form-control mb-2" id="bulkVideos" accept="video/*" multiple>
+                            <button class="btn btn-success btn-sm w-100" id="bulkVideoUploadBtn">
+                                <i class="ri-upload-2-line me-1"></i> Upload Selected Videos
+                            </button>
+                            <div class="progress mt-2" id="videoUploadProgress" style="display:none;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- YouTube Add --}}
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="border rounded p-3">
                             <h6 class="mb-3"><i class="ri-youtube-line me-1 text-danger"></i> Add YouTube Video</h6>
                             <input type="text" class="form-control mb-2" id="youtubeUrl"
@@ -94,7 +109,7 @@
                 <div id="mediaGrid" class="row g-2">
                     <div class="col-12 text-center text-muted py-4" id="mediaEmpty">
                         <i class="ri-image-line fs-1"></i>
-                        <p class="mt-2">No media yet. Upload images or add a YouTube video.</p>
+                        <p class="mt-2">No media yet. Upload images, videos, or add a YouTube video.</p>
                     </div>
                 </div>
             </div>
@@ -381,12 +396,21 @@
                             m.id + '" style="padding:2px 6px;">' +
                             '<i class="ri-delete-bin-line"></i></button>' +
                             '</div></div>';
+                    } else if (m.type === 'video') {
+                        card = '<div class="col-6 col-md-3 col-lg-2 media-item" data-id="' + m.id + '">' +
+                            '<div class="position-relative border rounded overflow-hidden" style="aspect-ratio:1;">' +
+                            '<video src="' + m.file + '" class="w-100 h-100" style="object-fit:cover;" controls></video>' +
+                            '<span class="position-absolute top-0 start-0 m-1 badge bg-success"><i class="ri-video-line"></i> Video</span>' +
+                            '<button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-media-btn" data-id="' +
+                            m.id + '" style="padding:2px 6px;">' +
+                            '<i class="ri-delete-bin-line"></i></button>' +
+                            '</div></div>';
                     } else {
                         var thumb = 'https://img.youtube.com/vi/' + m.youtube_id + '/hqdefault.jpg';
                         card = '<div class="col-6 col-md-3 col-lg-2 media-item" data-id="' + m.id + '">' +
                             '<div class="position-relative border rounded overflow-hidden" style="aspect-ratio:1;">' +
                             '<img src="' + thumb + '" class="w-100 h-100" style="object-fit:cover;">' +
-                            '<span class="position-absolute top-0 start-0 m-1 badge bg-danger"><i class="ri-youtube-line"></i> Video</span>' +
+                            '<span class="position-absolute top-0 start-0 m-1 badge bg-danger"><i class="ri-youtube-line"></i> YouTube</span>' +
                             '<button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-media-btn" data-id="' +
                             m.id + '" style="padding:2px 6px;">' +
                             '<i class="ri-delete-bin-line"></i></button>' +
@@ -453,6 +477,52 @@
                     },
                     error: function(xhr) {
                         $('#uploadProgress').hide();
+                        if (xhr.status === 422) showError(Object.values(xhr.responseJSON
+                            .errors)[0][0]);
+                        else showError('Upload failed.');
+                    }
+                });
+            });
+
+            // ── BULK VIDEO UPLOAD ──
+            $('#bulkVideoUploadBtn').on('click', function() {
+                var galleryId = $('#activeGalleryId').val();
+                var files = document.getElementById('bulkVideos').files;
+
+                if (!files.length) {
+                    showError('Please select at least one video.');
+                    return;
+                }
+                if (!galleryId) {
+                    showError('No album selected.');
+                    return;
+                }
+
+                var formData = new FormData();
+                formData.append('gallery_id', galleryId);
+                $.each(files, function(i, f) {
+                    formData.append('videos[]', f);
+                });
+
+                $('#videoUploadProgress').show();
+                showLoader();
+
+                $.ajax({
+                    url: '{{ route('gallery.media.videoBulk') }}',
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(res) {
+                        if (res.success) {
+                            showSuccess(res.message);
+                            $('#bulkVideos').val('');
+                            $('#videoUploadProgress').hide();
+                            loadMedia('{{ url('admin/galleries') }}/' + galleryId + '/media');
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#videoUploadProgress').hide();
                         if (xhr.status === 422) showError(Object.values(xhr.responseJSON
                             .errors)[0][0]);
                         else showError('Upload failed.');
