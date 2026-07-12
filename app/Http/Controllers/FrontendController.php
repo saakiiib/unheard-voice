@@ -26,19 +26,20 @@ class FrontendController extends Controller
     {
         $this->seo();
 
-        $sliders = Slider::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+        $sliders = Slider::where('is_active', true)->latest()->get();
 
-        $activities = Activity::with('category')->where('is_active', true)->orderBy('sort_order', 'asc')->take(3)->get();
+        $activities = Activity::with('category')->where('is_active', true)->latest()->take(3)->get();
 
-        $testimonials = Testimonial::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+        $testimonials = Testimonial::where('is_active', true)->latest()->get();
 
         $events = Event::with('category')->where('is_active', true)->upcoming()->orderBy('event_date', 'asc')->take(3)->get();
 
         $galleries = Gallery::where('is_active', true)
             ->with(['media' => function ($query) {
-                $query->orderBy('sort_order');
+                $query->latest()->limit(4);
             }])
-            ->orderBy('sort_order')
+            ->latest()
+            ->limit(4)
             ->get();
 
         return spa('frontend.index', compact('sliders', 'activities', 'testimonials', 'events', 'galleries'));
@@ -55,9 +56,9 @@ class FrontendController extends Controller
     {
         $this->seo('team');
 
-        $leadership = Team::where('type', 'Leadership')->where('is_active', true)->orderBy('sort_order')->get();
+        $leadership = Team::where('type', 'Leadership')->where('is_active', true)->latest()->get();
 
-        $advisors   = Team::where('type', 'Advisors')->where('is_active', true)->orderBy('sort_order')->get();
+        $advisors   = Team::where('type', 'Advisors')->where('is_active', true)->latest()->get();
 
         return spa('frontend.team', compact('leadership', 'advisors'));
     }
@@ -68,7 +69,7 @@ class FrontendController extends Controller
 
         $activities = Activity::where('is_active', true)
             ->with('category')
-            ->orderBy('sort_order', 'asc')
+            ->latest()
             ->get();
 
         return spa('frontend.activities', compact('activities'));
@@ -79,7 +80,7 @@ class FrontendController extends Controller
         $activity = Activity::where('slug', $slug)
             ->where('is_active', true)
             ->with(['category', 'media' => function ($query) {
-                $query->orderBy('sort_order');
+                $query->latest();
             }])
             ->firstOrFail();
 
@@ -94,7 +95,7 @@ class FrontendController extends Controller
         $related = Activity::where('is_active', true)
             ->where('id', '!=', $activity->id)
             ->with('category')
-            ->orderBy('sort_order', 'asc')
+            ->latest()
             ->limit(3)
             ->get();
 
@@ -107,7 +108,7 @@ class FrontendController extends Controller
 
         $blogs = Blog::where('is_active', true)
             ->with('category')
-            ->orderBy('sort_order')
+            ->latest()
             ->get();
 
         return spa('frontend.blogs', compact('blogs'));
@@ -131,7 +132,7 @@ class FrontendController extends Controller
         $related = Blog::where('is_active', true)
             ->where('id', '!=', $blog->id)
             ->with('category')
-            ->orderBy('sort_order')
+            ->latest()
             ->limit(3)
             ->get();
 
@@ -184,9 +185,9 @@ class FrontendController extends Controller
 
         $galleries = Gallery::where('is_active', true)
             ->with(['media' => function ($query) {
-                $query->orderBy('sort_order');
+                $query->latest();
             }])
-            ->orderBy('sort_order')
+            ->latest()
             ->get();
 
         return spa('frontend.gallery', compact('galleries'));

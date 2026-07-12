@@ -465,6 +465,10 @@
                         </div>
                     @endif
                 </div>
+
+                <div class="text-center mt-4">
+                    <a @spa href="{{ route('gallery') }}" class="btn btn-teal btn-lg">View All Gallery <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
             </div>
         </section>
 
