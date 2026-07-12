@@ -24,11 +24,11 @@
                                 <label class="form-label">Album Title <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="title" placeholder="Enter album title">
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 d-none">
                                 <label class="form-label">Description</label>
                                 <textarea class="form-control" id="description" rows="3" placeholder="Short description (optional)"></textarea>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 d-none">
                                 <label class="form-label">Cover Image</label>
                                 <input type="file" class="form-control" id="cover_image" accept="image/*"
                                     onchange="previewImage(event, '#coverPreview')">
@@ -141,7 +141,6 @@
                                 <thead>
                                     <tr>
                                         <th>Sl</th>
-                                        <th>Cover</th>
                                         <th>Title</th>
                                         <th>Media</th>
                                         <th>Status</th>
@@ -205,12 +204,6 @@
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'cover_image',
-                        name: 'cover_image',
                         orderable: false,
                         searchable: false
                     },

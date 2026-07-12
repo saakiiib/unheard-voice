@@ -43,7 +43,7 @@
             <div class="col-6 col-lg-2">
                 <h5>More</h5>
                 <a @spa href="{{ route('blogs') }}">Blogs</a><br>  
-                <a @spa href="{{ route('events') }}">Events</a><br>
+                <a @spa href="{{ route('activities') }}">Activities</a><br>
                 <a @spa href="{{ route('contact') }}">Contact</a><br>
                 <a @spa href="{{ route('donate') }}">Donate</a><br>
             </div>

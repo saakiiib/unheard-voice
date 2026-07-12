@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\ActivityMedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
@@ -46,6 +47,14 @@ class ActivityController extends Controller
                                 <i class="ri-more-fill align-middle"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <button class="dropdown-item manage-btn"
+                                        data-id="' . $row->id . '"
+                                        data-title="' . e($row->title) . '"
+                                        data-url="' . route('activity.media.list', $row->id) . '">
+                                        <i class="ri-image-2-line align-bottom me-2 text-muted"></i> Manage Media
+                                    </button>
+                                </li>
                                 <li>
                                     <button class="dropdown-item edit-btn" data-id="' . $row->id . '" data-url="' . route('activity.edit', $row->id) . '">
                                         <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
@@ -212,7 +221,14 @@ class ActivityController extends Controller
 
     public function destroy($id)
     {
-        $activity = Activity::findOrFail($id);
+        $activity = Activity::with('media')->findOrFail($id);
+
+        foreach ($activity->media as $media) {
+            if (in_array($media->type, ['image', 'video']) && $media->file && file_exists(public_path($media->file))) {
+                @unlink(public_path($media->file));
+            }
+        }
+
         if ($activity->image && $activity->image !== 'placeholder.webp' && file_exists(public_path($activity->image))) {
             @unlink(public_path($activity->image));
         }
@@ -241,5 +257,130 @@ class ActivityController extends Controller
             Activity::where('id', $id)->update(['sort_order' => $index + 1]);
         }
         return response()->json(['success' => true, 'message' => 'Activity order updated successfully!']);
+    }
+
+    // ── MEDIA ──
+
+    public function mediaList($activityId)
+    {
+        $media = ActivityMedia::where('activity_id', $activityId)->orderBy('sort_order')->get()
+            ->map(function ($m) {
+                return [
+                    'id'          => $m->id,
+                    'type'        => $m->type,
+                    'file'        => $m->file ? asset($m->file) : null,
+                    'youtube_url' => $m->youtube_url,
+                    'youtube_id'  => $m->youtube_id,
+                    'sort_order'  => $m->sort_order,
+                ];
+            });
+
+        return response()->json(['success' => true, 'data' => $media]);
+    }
+
+    public function mediaBulkStore(Request $request)
+    {
+        $request->validate([
+            'activity_id' => 'required|exists:activities,id',
+            'files.*'     => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $maxOrder = ActivityMedia::where('activity_id', $request->activity_id)->max('sort_order') ?? 0;
+
+        foreach ($request->file('files', []) as $file) {
+            $maxOrder++;
+            ActivityMedia::create([
+                'activity_id' => $request->activity_id,
+                'type'        => 'image',
+                'file'        => $this->uploadImage($file),
+                'sort_order'  => $maxOrder,
+            ]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Images uploaded successfully.']);
+    }
+
+    public function mediaVideoBulkStore(Request $request)
+    {
+        $request->validate([
+            'activity_id' => 'required|exists:activities,id',
+            'videos.*'    => 'mimes:mp4,mov,avi,wmv,webm,mkv|max:51200',
+        ]);
+
+        $maxOrder = ActivityMedia::where('activity_id', $request->activity_id)->max('sort_order') ?? 0;
+
+        foreach ($request->file('videos', []) as $file) {
+            $maxOrder++;
+            ActivityMedia::create([
+                'activity_id' => $request->activity_id,
+                'type'        => 'video',
+                'file'        => $this->uploadVideo($file),
+                'sort_order'  => $maxOrder,
+            ]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Videos uploaded successfully.']);
+    }
+
+    public function mediaYoutubeStore(Request $request)
+    {
+        $request->validate([
+            'activity_id' => 'required|exists:activities,id',
+            'youtube_url' => 'required|url',
+        ]);
+
+        ActivityMedia::create([
+            'activity_id'  => $request->activity_id,
+            'type'         => 'youtube',
+            'youtube_url'  => $request->youtube_url,
+            'sort_order'   => ActivityMedia::where('activity_id', $request->activity_id)->max('sort_order') + 1,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'YouTube video added successfully.']);
+    }
+
+    public function mediaDestroy($id)
+    {
+        $media = ActivityMedia::findOrFail($id);
+        if (in_array($media->type, ['image', 'video']) && $media->file && file_exists(public_path($media->file))) {
+            @unlink(public_path($media->file));
+        }
+        $media->delete();
+        return response()->json(['success' => true, 'message' => 'Media deleted successfully.']);
+    }
+
+    public function mediaUpdateOrder(Request $request)
+    {
+        foreach ($request->order as $index => $id) {
+            ActivityMedia::where('id', $id)->update(['sort_order' => $index + 1]);
+        }
+        return response()->json(['success' => true, 'message' => 'Media order updated!']);
+    }
+
+    // ── HELPERS ──
+
+    private function uploadImage($file): string
+    {
+        $filename = mt_rand(10000000, 99999999) . '.webp';
+        $destPath = public_path('uploads/activities/');
+        if (!file_exists($destPath)) mkdir($destPath, 0755, true);
+
+        Image::make($file)
+            ->resize(1200, null, function ($c) { $c->aspectRatio(); $c->upsize(); })
+            ->encode('webp', 80)
+            ->save($destPath . $filename);
+
+        return '/uploads/activities/' . $filename;
+    }
+
+    private function uploadVideo($file): string
+    {
+        $filename = mt_rand(10000000, 99999999) . '.' . $file->getClientOriginalExtension();
+        $destPath = public_path('uploads/activities/videos/');
+        if (!file_exists($destPath)) mkdir($destPath, 0755, true);
+
+        $file->move($destPath, $filename);
+
+        return '/uploads/activities/videos/' . $filename;
     }
 }

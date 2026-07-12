@@ -322,10 +322,10 @@
 
                                 <div class="body">
                                     <div class="meta-row">
-                                        @if ($activity->event_date)
+                                        @if ($activity->activity_date)
                                             <span>
                                                 <i class="bi bi-calendar3"></i>
-                                                {{ $activity->event_date->format('d M Y') }}
+                                                {{ $activity->activity_date->format('d M Y') }}
                                             </span>
                                         @endif
 

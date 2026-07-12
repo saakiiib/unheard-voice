@@ -56,6 +56,13 @@ Route::group(['prefix' => 'admin/', 'middleware' => ['auth', 'is_admin']], funct
     Route::post('/activities/toggle-status', [ActivityController::class, 'toggleStatus'])->name('activity.toggleStatus');
     Route::post('/activities/update-order', [ActivityController::class, 'updateOrder'])->name('activity.updateOrder');
 
+    Route::get('/activities/{id}/media', [ActivityController::class, 'mediaList'])->name('activity.media.list');
+    Route::post('/activities/media/bulk', [ActivityController::class, 'mediaBulkStore'])->name('activity.media.bulk');
+    Route::post('/activities/media/video-bulk', [ActivityController::class, 'mediaVideoBulkStore'])->name('activity.media.videoBulk');
+    Route::post('/activities/media/youtube', [ActivityController::class, 'mediaYoutubeStore'])->name('activity.media.youtube');
+    Route::delete('/activities/media/{id}', [ActivityController::class, 'mediaDestroy'])->name('activity.media.delete');
+    Route::post('/activities/media/update-order', [ActivityController::class, 'mediaUpdateOrder'])->name('activity.media.updateOrder');
+
     // Sliders
     Route::get('/sliders', [SliderController::class, 'index'])->name('slider.index');
     Route::post('/sliders', [SliderController::class, 'store'])->name('slider.store');

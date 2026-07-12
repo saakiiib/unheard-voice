@@ -32,8 +32,6 @@ class FrontendController extends Controller
 
         $testimonials = Testimonial::where('is_active', true)->orderBy('sort_order', 'asc')->get();
 
-        $activities = Event::with('category')->where('is_active', true)->past()->orderBy('event_date', 'desc')->take(3)->get();
-
         $events = Event::with('category')->where('is_active', true)->upcoming()->orderBy('event_date', 'asc')->take(3)->get();
 
         $galleries = Gallery::where('is_active', true)
@@ -68,10 +66,9 @@ class FrontendController extends Controller
     {
         $this->seo('activities');
 
-        $activities = Event::where('is_active', true)
-            ->past()
+        $activities = Activity::where('is_active', true)
             ->with('category')
-            ->orderBy('event_date', 'desc')
+            ->orderBy('sort_order', 'asc')
             ->get();
 
         return spa('frontend.activities', compact('activities'));
@@ -79,10 +76,11 @@ class FrontendController extends Controller
 
     public function activityDetails($slug)
     {
-        $activity = Event::where('slug', $slug)
+        $activity = Activity::where('slug', $slug)
             ->where('is_active', true)
-            ->past()
-            ->with('category')
+            ->with(['category', 'media' => function ($query) {
+                $query->orderBy('sort_order');
+            }])
             ->firstOrFail();
 
         $this->seo(
@@ -93,11 +91,10 @@ class FrontendController extends Controller
             $activity->meta_image ?: $activity->image
         );
 
-        $related = Event::where('is_active', true)
-            ->past()
+        $related = Activity::where('is_active', true)
             ->where('id', '!=', $activity->id)
             ->with('category')
-            ->orderBy('event_date', 'desc')
+            ->orderBy('sort_order', 'asc')
             ->limit(3)
             ->get();
 

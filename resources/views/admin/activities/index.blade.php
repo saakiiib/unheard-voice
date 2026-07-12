@@ -95,6 +95,69 @@
         </div>
     </div>
 
+    {{-- MEDIA MANAGER --}}
+    <div class="container-fluid" id="mediaManagerContainer" style="display:none;">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <h4 class="card-title mb-0 flex-grow-1">
+                    <i class="ri-image-2-line me-1"></i>
+                    Manage Media — <span id="mediaActivityTitle" class="text-primary"></span>
+                </h4>
+                <button class="btn btn-sm btn-light" id="closeMediaManager">
+                    <i class="ri-close-line"></i> Close
+                </button>
+            </div>
+            <div class="card-body">
+                <input type="hidden" id="activeActivityId">
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <h6 class="mb-3"><i class="ri-image-add-line me-1 text-primary"></i> Upload Images</h6>
+                            <input type="file" class="form-control mb-2" id="bulkImages" accept="image/*" multiple>
+                            <button class="btn btn-primary btn-sm w-100" id="bulkUploadBtn">
+                                <i class="ri-upload-2-line me-1"></i> Upload Selected Images
+                            </button>
+                            <div class="progress mt-2" id="uploadProgress" style="display:none;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <h6 class="mb-3"><i class="ri-video-add-line me-1 text-success"></i> Upload Videos</h6>
+                            <input type="file" class="form-control mb-2" id="bulkVideos" accept="video/*" multiple>
+                            <button class="btn btn-success btn-sm w-100" id="bulkVideoUploadBtn">
+                                <i class="ri-upload-2-line me-1"></i> Upload Selected Videos
+                            </button>
+                            <div class="progress mt-2" id="videoUploadProgress" style="display:none;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded p-3">
+                            <h6 class="mb-3"><i class="ri-youtube-line me-1 text-danger"></i> Add YouTube Video</h6>
+                            <input type="text" class="form-control mb-2" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
+                            <button class="btn btn-danger btn-sm w-100" id="addYoutubeBtn">
+                                <i class="ri-add-line me-1"></i> Add Video
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mediaGrid" class="row g-2">
+                    <div class="col-12 text-center text-muted py-4" id="mediaEmpty">
+                        <i class="ri-image-line fs-1"></i>
+                        <p class="mt-2">No media yet. Upload images, videos, or add a YouTube video.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid" id="contentContainer">
         <ul class="nav nav-tabs mb-3" id="activityTab" role="tablist">
             <li class="nav-item" role="presentation">
@@ -415,6 +478,207 @@
                 $('#imagePreview').attr('src', '/placeholder.webp');
                 $('#metaImagePreview').attr('src', '/placeholder.webp');
             }
+
+            // ── MANAGE MEDIA ──
+            $(document).on('click', '.manage-btn', function() {
+                var id = $(this).data('id');
+                var title = $(this).data('title');
+                var url = $(this).data('url');
+
+                $('#activeActivityId').val(id);
+                $('#mediaActivityTitle').text(title);
+                $('#addThisFormContainer').slideUp(200);
+                $('#newBtn').show();
+                $('#mediaManagerContainer').slideDown(300);
+                pageTop();
+                loadMedia(url);
+            });
+
+            $('#closeMediaManager').on('click', function() {
+                $('#mediaManagerContainer').slideUp(200);
+                reloadTable('#activityTable');
+            });
+
+            function loadMedia(url) {
+                $.get(url, function(res) {
+                    if (res.success) renderMediaGrid(res.data);
+                });
+            }
+
+            function renderMediaGrid(items) {
+                var grid = $('#mediaGrid');
+                grid.empty();
+
+                if (!items.length) {
+                    grid.html('<div class="col-12 text-center text-muted py-4"><i class="ri-image-line fs-1"></i><p class="mt-2">No media yet.</p></div>');
+                    return;
+                }
+
+                $.each(items, function(i, m) {
+                    var card = '';
+                    if (m.type === 'image') {
+                        card = '<div class="col-6 col-md-3 col-lg-2 media-item" data-id="' + m.id + '">' +
+                            '<div class="position-relative border rounded overflow-hidden" style="aspect-ratio:1;">' +
+                            '<img src="' + m.file + '" class="w-100 h-100" style="object-fit:cover;">' +
+                            '<button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-media-btn" data-id="' + m.id + '" style="padding:2px 6px;">' +
+                            '<i class="ri-delete-bin-line"></i></button></div></div>';
+                    } else if (m.type === 'video') {
+                        card = '<div class="col-6 col-md-3 col-lg-2 media-item" data-id="' + m.id + '">' +
+                            '<div class="position-relative border rounded overflow-hidden" style="aspect-ratio:1;">' +
+                            '<video src="' + m.file + '" class="w-100 h-100" style="object-fit:cover;" controls></video>' +
+                            '<span class="position-absolute top-0 start-0 m-1 badge bg-success"><i class="ri-video-line"></i> Video</span>' +
+                            '<button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-media-btn" data-id="' + m.id + '" style="padding:2px 6px;">' +
+                            '<i class="ri-delete-bin-line"></i></button></div></div>';
+                    } else {
+                        var thumb = 'https://img.youtube.com/vi/' + m.youtube_id + '/hqdefault.jpg';
+                        card = '<div class="col-6 col-md-3 col-lg-2 media-item" data-id="' + m.id + '">' +
+                            '<div class="position-relative border rounded overflow-hidden" style="aspect-ratio:1;">' +
+                            '<img src="' + thumb + '" class="w-100 h-100" style="object-fit:cover;">' +
+                            '<span class="position-absolute top-0 start-0 m-1 badge bg-danger"><i class="ri-youtube-line"></i> YouTube</span>' +
+                            '<button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-media-btn" data-id="' + m.id + '" style="padding:2px 6px;">' +
+                            '<i class="ri-delete-bin-line"></i></button></div></div>';
+                    }
+                    grid.append(card);
+                });
+
+                grid.sortable({
+                    items: '.media-item',
+                    placeholder: 'col-6 col-md-3 col-lg-2',
+                    cursor: 'grab',
+                    update: function() {
+                        var order = [];
+                        grid.find('.media-item').each(function() {
+                            order.push($(this).data('id'));
+                        });
+                        $.post('{{ route('activity.media.updateOrder') }}', { order: order }, function(res) {
+                            showSuccess(res.message);
+                        });
+                    }
+                });
+            }
+
+            // ── BULK IMAGE UPLOAD ──
+            $('#bulkUploadBtn').on('click', function() {
+                var activityId = $('#activeActivityId').val();
+                var files = document.getElementById('bulkImages').files;
+
+                if (!files.length) { showError('Please select at least one image.'); return; }
+                if (!activityId) { showError('No activity selected.'); return; }
+
+                var formData = new FormData();
+                formData.append('activity_id', activityId);
+                $.each(files, function(i, f) { formData.append('files[]', f); });
+
+                $('#uploadProgress').show();
+                showLoader();
+
+                $.ajax({
+                    url: '{{ route('activity.media.bulk') }}',
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(res) {
+                        if (res.success) {
+                            showSuccess(res.message);
+                            $('#bulkImages').val('');
+                            $('#uploadProgress').hide();
+                            loadMedia('{{ url('admin/activities') }}/' + activityId + '/media');
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#uploadProgress').hide();
+                        if (xhr.status === 422) showError(Object.values(xhr.responseJSON.errors)[0][0]);
+                        else showError('Upload failed.');
+                    }
+                });
+            });
+
+            // ── BULK VIDEO UPLOAD ──
+            $('#bulkVideoUploadBtn').on('click', function() {
+                var activityId = $('#activeActivityId').val();
+                var files = document.getElementById('bulkVideos').files;
+
+                if (!files.length) { showError('Please select at least one video.'); return; }
+                if (!activityId) { showError('No activity selected.'); return; }
+
+                var formData = new FormData();
+                formData.append('activity_id', activityId);
+                $.each(files, function(i, f) { formData.append('videos[]', f); });
+
+                $('#videoUploadProgress').show();
+                showLoader();
+
+                $.ajax({
+                    url: '{{ route('activity.media.videoBulk') }}',
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(res) {
+                        if (res.success) {
+                            showSuccess(res.message);
+                            $('#bulkVideos').val('');
+                            $('#videoUploadProgress').hide();
+                            loadMedia('{{ url('admin/activities') }}/' + activityId + '/media');
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#videoUploadProgress').hide();
+                        if (xhr.status === 422) showError(Object.values(xhr.responseJSON.errors)[0][0]);
+                        else showError('Upload failed.');
+                    }
+                });
+            });
+
+            // ── ADD YOUTUBE ──
+            $('#addYoutubeBtn').on('click', function() {
+                var activityId = $('#activeActivityId').val();
+                var url = $('#youtubeUrl').val().trim();
+
+                if (!url) { showError('Please enter a YouTube URL.'); return; }
+                if (!activityId) { showError('No activity selected.'); return; }
+
+                showLoader();
+                $.ajax({
+                    url: '{{ route('activity.media.youtube') }}',
+                    method: 'POST',
+                    data: { activity_id: activityId, youtube_url: url },
+                    success: function(res) {
+                        if (res.success) {
+                            showSuccess(res.message);
+                            $('#youtubeUrl').val('');
+                            loadMedia('{{ url('admin/activities') }}/' + activityId + '/media');
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) showError(Object.values(xhr.responseJSON.errors)[0][0]);
+                        else showError('Failed to add video.');
+                    }
+                });
+            });
+
+            // ── DELETE MEDIA ──
+            $(document).on('click', '.delete-media-btn', function() {
+                var id = $(this).data('id');
+                var item = $(this).closest('.media-item');
+
+                if (!confirm('Delete this media?')) return;
+
+                $.ajax({
+                    url: '{{ url('admin/activities/media') }}/' + id,
+                    method: 'DELETE',
+                    success: function(res) {
+                        if (res.success) {
+                            item.remove();
+                            showSuccess(res.message);
+                            if ($('#mediaGrid .media-item').length === 0) {
+                                $('#mediaGrid').html('<div class="col-12 text-center text-muted py-4"><i class="ri-image-line fs-1"></i><p class="mt-2">No media yet.</p></div>');
+                            }
+                        }
+                    }
+                });
+            });
         });
     </script>
 @endsection

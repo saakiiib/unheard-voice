@@ -76,7 +76,7 @@
                     <a @spa class="nav-link {{ Route::is('blogs*') ? 'active' : '' }}"
                         href="{{ route('blogs') }}">Blogs</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item d-none">
                     <a @spa class="nav-link {{ Route::is('events*') ? 'active' : '' }}"
                         href="{{ route('events') }}">Events</a>
                 </li>

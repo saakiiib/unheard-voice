@@ -31,4 +31,9 @@ class Activity extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function media()
+    {
+        return $this->hasMany(ActivityMedia::class)->orderBy('sort_order');
+    }
 }
