@@ -56,9 +56,9 @@ class FrontendController extends Controller
     {
         $this->seo('team');
 
-        $leadership = Team::where('type', 'Leadership')->where('is_active', true)->latest()->get();
+        $leadership = Team::where('type', 'Leadership')->where('is_active', true)->orderBy('sort_order', 'asc')->orderBy('id', 'asc')->get();
 
-        $advisors   = Team::where('type', 'Advisors')->where('is_active', true)->latest()->get();
+        $advisors   = Team::where('type', 'Advisors')->where('is_active', true)->orderBy('sort_order', 'asc')->orderBy('id', 'asc')->get();
 
         return spa('frontend.team', compact('leadership', 'advisors'));
     }
